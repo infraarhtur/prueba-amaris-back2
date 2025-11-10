@@ -1,0 +1,6 @@
+@TechnicalTest.Api_HostAddress = http://localhost:0
+
+GET {{TechnicalTest.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
