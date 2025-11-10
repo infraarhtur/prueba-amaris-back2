@@ -37,3 +37,4 @@
 /Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Api/bin/Debug/net9.0/Swashbuckle.AspNetCore.Swagger.dll
 /Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Api/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Api/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Api/obj/Debug/net9.0/BTGPactual.Fondos.Api.sourcelink.json

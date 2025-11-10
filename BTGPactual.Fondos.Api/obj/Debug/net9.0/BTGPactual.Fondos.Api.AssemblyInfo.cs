@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BTGPactual.Fondos.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b3f2ddd21188b32164b192e51183303cd5366f98")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+586c077ab5883b966ff33e0049f935fb5f4bc83f")]
 [assembly: System.Reflection.AssemblyProductAttribute("BTGPactual.Fondos.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BTGPactual.Fondos.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
