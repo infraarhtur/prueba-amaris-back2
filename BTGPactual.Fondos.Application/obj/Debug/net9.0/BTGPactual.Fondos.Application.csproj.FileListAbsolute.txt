@@ -1,0 +1,15 @@
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/bin/Debug/net9.0/BTGPactual.Fondos.Application.deps.json
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/bin/Debug/net9.0/BTGPactual.Fondos.Application.dll
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/bin/Debug/net9.0/BTGPactual.Fondos.Application.pdb
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/bin/Debug/net9.0/BTGPactual.Fondos.Domain.dll
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/bin/Debug/net9.0/BTGPactual.Fondos.Domain.pdb
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/obj/Debug/net9.0/BTGPactual.Fondos.Application.csproj.AssemblyReference.cache
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/obj/Debug/net9.0/BTGPactual.Fondos.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/obj/Debug/net9.0/BTGPactual.Fondos.Application.AssemblyInfoInputs.cache
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/obj/Debug/net9.0/BTGPactual.Fondos.Application.AssemblyInfo.cs
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/obj/Debug/net9.0/BTGPactual.Fondos.Application.csproj.CoreCompileInputs.cache
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/obj/Debug/net9.0/BTGPactu.70074164.Up2Date
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/obj/Debug/net9.0/BTGPactual.Fondos.Application.dll
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/obj/Debug/net9.0/refint/BTGPactual.Fondos.Application.dll
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/obj/Debug/net9.0/BTGPactual.Fondos.Application.pdb
+/Users/arhtur/pruebaTecnicaAmaris/BTGPactual.Fondos.Application/obj/Debug/net9.0/ref/BTGPactual.Fondos.Application.dll
