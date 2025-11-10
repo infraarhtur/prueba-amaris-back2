@@ -1,0 +1,68 @@
+# Build artifacts
+bin/
+obj/
+
+# Visual Studio files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / JetBrains
+.idea/
+*.DotSettings.user
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.JustCode
+
+# Azure publish settings
+PublishProfiles/
+*.Publish.xml
+*.azurePubxml
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Entity Framework
+Migrations/
+
+# User-specific files
+*.rsuser
+*.sdf
+*.dbmdl
+*.bak
+
+# Local configuration
+appsettings.Development.json
+appsettings.Local.json
+
+# macOS
+.DS_Store
+
+# Coverage
+coverage/
+*.coverage
+*.coveragexml
+
+# Temporary files
+~*
+*.tmp
+
+# Tooling cache
+.vs/
+.ionide/
+
+
