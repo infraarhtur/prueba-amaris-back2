@@ -16,6 +16,10 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
             .HasColumnName("id")
             .ValueGeneratedNever();
 
+        builder.Property(client => client.UserId)
+            .HasColumnName("user_id")
+            .IsRequired();
+
         builder.Property(client => client.FirstName)
             .HasColumnName("first_name")
             .IsRequired()
@@ -43,6 +47,11 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
             .HasColumnName("created_at")
             .HasColumnType("timestamp with time zone")
             .HasDefaultValueSql("now()");
+
+        builder.HasOne(client => client.User)
+            .WithMany()
+            .HasForeignKey(client => client.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
 

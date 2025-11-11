@@ -9,6 +9,8 @@ public class ClientRepository(AppDbContext dbContext) : IClientRepository
 {
     private readonly AppDbContext _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     private static readonly Guid DefaultClientId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    private static readonly Guid DefaultUserId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+    private const string DefaultUserEmail = "demo.client@amaris.com";
 
     public async Task<Client> GetDefaultAsync(CancellationToken cancellationToken = default)
     {
@@ -22,7 +24,23 @@ public class ClientRepository(AppDbContext dbContext) : IClientRepository
             return client;
         }
 
-        var newClient = new Client(DefaultClientId, "Demo", "Client", "Bogota");
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == DefaultUserId, cancellationToken)
+            .ConfigureAwait(false);
+
+        if (user is null)
+        {
+            var seedUser = new User(
+                DefaultUserId,
+                DefaultUserEmail,
+                "ZGVmYXVsdF9wYXNzd29yZF9oYXNo",
+                "ZGVmYXVsdF9wYXNzd29yZF9zYWx0",
+                "Demo Client");
+
+            await _dbContext.Users.AddAsync(seedUser, cancellationToken).ConfigureAwait(false);
+        }
+
+        var newClient = new Client(DefaultClientId, DefaultUserId, "Demo", "Client", "Bogota");
         await _dbContext.Clients.AddAsync(newClient, cancellationToken).ConfigureAwait(false);
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 

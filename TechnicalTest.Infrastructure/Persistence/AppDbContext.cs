@@ -27,10 +27,21 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
         modelBuilder.ApplyConfiguration(new SubscriptionConfiguration());
 
+        var seedUserId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
         var seedClientId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        var seedUser = new
+        {
+            Id = seedUserId,
+            Email = "demo.client@amaris.com",
+            PasswordHash = "ZGVmYXVsdF9wYXNzd29yZF9oYXNo",
+            PasswordSalt = "ZGVmYXVsdF9wYXNzd29yZF9zYWx0",
+            FullName = "Demo Client",
+            CreatedAtUtc = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+        };
         var seedClient = new
         {
             Id = seedClientId,
+            UserId = seedUserId,
             FirstName = "Demo",
             LastName = "Client",
             City = "Bogota",
@@ -48,6 +59,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 product.Category
             });
 
+        modelBuilder.Entity<User>().HasData(seedUser);
         modelBuilder.Entity<Client>().HasData(seedClient);
         modelBuilder.Entity<Product>().HasData(seedProducts);
     }

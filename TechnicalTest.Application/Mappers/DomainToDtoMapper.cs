@@ -25,6 +25,7 @@ public static class DomainToDtoMapper
     public static ClientDto ToClientDto(this Client client) =>
         new(
             client.Id,
+            client.UserId,
             client.FirstName,
             client.LastName,
             client.City,

@@ -5,4 +5,5 @@ public record ClientUpdateRequestDto(
     string LastName,
     string City,
     decimal? Balance = null,
-    string? NotificationChannel = null);
+    string? NotificationChannel = null,
+    Guid? UserId = null);

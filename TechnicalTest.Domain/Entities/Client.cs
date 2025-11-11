@@ -18,6 +18,7 @@ public class Client
 
     public Client(
         Guid id,
+        Guid userId,
         string firstName,
         string lastName,
         string city,
@@ -26,6 +27,7 @@ public class Client
         DateTime? createdAtUtc = null)
     {
         Id = id;
+        AssignUser(userId);
         UpdatePersonalInfo(firstName, lastName, city);
         UpdateBalance(balance);
         NotificationChannel = notificationChannel;
@@ -33,6 +35,8 @@ public class Client
     }
 
     public Guid Id { get; private set; }
+    public Guid UserId { get; private set; }
+    public User User { get; private set; } = null!;
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public string City { get; private set; }
@@ -72,6 +76,16 @@ public class Client
     public void UpdateNotificationChannel(NotificationChannel channel)
     {
         NotificationChannel = channel;
+    }
+
+    public void AssignUser(Guid userId)
+    {
+        if (userId == Guid.Empty)
+        {
+            throw new DomainException("El identificador de usuario es obligatorio.");
+        }
+
+        UserId = userId;
     }
 
     public void UpdateBalance(decimal balance)

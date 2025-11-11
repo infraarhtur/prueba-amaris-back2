@@ -37,7 +37,14 @@ public class ClientService(IClientRepository clientRepository) : IClientService
 
         var channel = DomainToDtoMapper.ParseChannelOrDefault(request.NotificationChannel, NotificationChannel.Email);
         var balance = request.Balance ?? Client.InitialBalance;
-        var client = new Client(Guid.NewGuid(), request.FirstName, request.LastName, request.City, balance, channel);
+        var client = new Client(
+            Guid.NewGuid(),
+            request.UserId,
+            request.FirstName,
+            request.LastName,
+            request.City,
+            balance,
+            channel);
 
         await _clientRepository.AddAsync(client, cancellationToken).ConfigureAwait(false);
         return client.ToClientDto();
@@ -52,6 +59,11 @@ public class ClientService(IClientRepository clientRepository) : IClientService
                        ?? throw new NotFoundException("No se encontró el cliente solicitado.");
 
         existing.UpdatePersonalInfo(request.FirstName, request.LastName, request.City);
+
+        if (request.UserId.HasValue)
+        {
+            existing.AssignUser(request.UserId.Value);
+        }
 
         if (request.Balance.HasValue)
         {
