@@ -11,7 +11,6 @@ public interface IProductManagementService
     Task<ProductDto> UpdateProductAsync(int id, ProductUpdateRequestDto request, CancellationToken cancellationToken);
     Task DeleteProductAsync(int id, CancellationToken cancellationToken);
     Task<IReadOnlyCollection<SubscriptionDto>> GetSubscriptionsAsync(CancellationToken cancellationToken);
-    Task<IReadOnlyCollection<TransactionDto>> GetTransactionsAsync(CancellationToken cancellationToken);
     Task<SubscriptionDto> SubscribeAsync(SubscriptionRequestDto request, CancellationToken cancellationToken);
     Task<SubscriptionDto> CancelSubscriptionAsync(Guid subscriptionId, CancellationToken cancellationToken);
 }

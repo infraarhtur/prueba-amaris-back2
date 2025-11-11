@@ -14,7 +14,6 @@ public class ProductManagementService : IProductManagementService
     private readonly IClientRepository _clientRepository;
     private readonly IProductRepository _productRepository;
     private readonly ISubscriptionRepository _subscriptionRepository;
-    private readonly ITransactionRepository _transactionRepository;
     private readonly INotificationService _notificationService;
     private readonly TimeProvider _timeProvider;
 
@@ -22,14 +21,12 @@ public class ProductManagementService : IProductManagementService
         IClientRepository clientRepository,
         IProductRepository productRepository,
         ISubscriptionRepository subscriptionRepository,
-        ITransactionRepository transactionRepository,
         INotificationService notificationService,
         TimeProvider? timeProvider = null)
     {
         _clientRepository = clientRepository ?? throw new ArgumentNullException(nameof(clientRepository));
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         _subscriptionRepository = subscriptionRepository ?? throw new ArgumentNullException(nameof(subscriptionRepository));
-        _transactionRepository = transactionRepository ?? throw new ArgumentNullException(nameof(transactionRepository));
         _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
         _timeProvider = timeProvider ?? TimeProvider.System;
     }
@@ -107,14 +104,6 @@ public class ProductManagementService : IProductManagementService
         return subscriptions.Select(subscription => subscription.ToDto()).ToArray();
     }
 
-    public async Task<IReadOnlyCollection<TransactionDto>> GetTransactionsAsync(CancellationToken cancellationToken)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-        var client = await GetDefaultClientAsync(cancellationToken).ConfigureAwait(false);
-        var transactions = await _transactionRepository.GetByClientIdAsync(client.Id, cancellationToken).ConfigureAwait(false);
-        return transactions.Select(transaction => transaction.ToDto()).OrderByDescending(dto => dto.OccurredAtUtc).ToArray();
-    }
-
     public async Task<SubscriptionDto> SubscribeAsync(SubscriptionRequestDto request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -138,9 +127,6 @@ public class ProductManagementService : IProductManagementService
         var nowUtc = _timeProvider.GetUtcNow().UtcDateTime;
         var subscription = new Subscription(Guid.NewGuid(), client.Id, product.Id, request.Amount, nowUtc);
         await _subscriptionRepository.AddAsync(subscription, cancellationToken).ConfigureAwait(false);
-
-        var transaction = new Transaction(Guid.NewGuid(), subscription.Id, product.Id, request.Amount, TransactionType.Subscription, nowUtc);
-        await _transactionRepository.AddAsync(transaction, cancellationToken).ConfigureAwait(false);
 
         await _notificationService.NotifyAsync(client, product, channel, cancellationToken).ConfigureAwait(false);
 
@@ -171,9 +157,6 @@ public class ProductManagementService : IProductManagementService
 
         client.Credit(subscription.Amount);
         await _clientRepository.UpdateAsync(client, cancellationToken).ConfigureAwait(false);
-
-        var transaction = new Transaction(Guid.NewGuid(), subscription.Id, product.Id, subscription.Amount, TransactionType.Cancellation, nowUtc);
-        await _transactionRepository.AddAsync(transaction, cancellationToken).ConfigureAwait(false);
 
         return subscription.ToDto();
     }

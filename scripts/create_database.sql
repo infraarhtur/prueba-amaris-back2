@@ -33,18 +33,6 @@ CREATE TABLE subscriptions (
     CONSTRAINT "FK_subscriptions_products_product_id" FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE RESTRICT
 );
 
-CREATE TABLE transactions (
-    id uuid NOT NULL,
-    subscription_id uuid NOT NULL,
-    product_id integer NOT NULL,
-    amount numeric(18,2) NOT NULL,
-    type integer NOT NULL,
-    occurred_at_utc timestamp with time zone NOT NULL,
-    CONSTRAINT "PK_transactions" PRIMARY KEY (id),
-    CONSTRAINT "FK_transactions_products_product_id" FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE RESTRICT,
-    CONSTRAINT "FK_transactions_subscriptions_subscription_id" FOREIGN KEY (subscription_id) REFERENCES subscriptions (id) ON DELETE RESTRICT
-);
-
 INSERT INTO clients (id, balance, created_at, notification_channel)
 VALUES ('11111111-1111-1111-1111-111111111111', 500000.0, TIMESTAMPTZ '2024-01-01T00:00:00Z', 0);
 
@@ -62,10 +50,6 @@ VALUES (5, 0, 100000.0, 'FPV_BTG_PACTUAL_DINAMICA');
 CREATE INDEX "IX_subscriptions_client_id" ON subscriptions (client_id);
 
 CREATE INDEX "IX_subscriptions_product_id" ON subscriptions (product_id);
-
-CREATE INDEX "IX_transactions_product_id" ON transactions (product_id);
-
-CREATE INDEX "IX_transactions_subscription_id" ON transactions (subscription_id);
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
 VALUES ('20251111020229_Initial', '9.0.10');

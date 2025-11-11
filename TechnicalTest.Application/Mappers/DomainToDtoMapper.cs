@@ -19,9 +19,6 @@ public static class DomainToDtoMapper
             subscription.CancelledAtUtc,
             subscription.IsActive);
 
-    public static TransactionDto ToDto(this Transaction transaction) =>
-        new(transaction.Id, transaction.SubscriptionId, transaction.ProductId, transaction.Amount, transaction.Type.ToString(), transaction.OccurredAtUtc);
-
     public static ClientBalanceDto ToDto(this Client client) =>
         new(client.Id, client.Balance, client.NotificationChannel.ToString());
 
