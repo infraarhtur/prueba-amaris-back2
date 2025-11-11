@@ -38,6 +38,9 @@ public static class DomainToDtoMapper
     public static UserDto ToDto(this User user) =>
         new(user.Id, user.Email, user.FullName);
 
+    public static BankBranchDto ToDto(this BankBranch bankBranch) =>
+        new(bankBranch.Id, bankBranch.Name, bankBranch.City);
+
     public static NotificationChannel ParseChannel(string channel) =>
         Enum.TryParse<NotificationChannel>(channel, true, out var parsed)
             ? parsed

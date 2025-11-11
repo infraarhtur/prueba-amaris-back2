@@ -43,6 +43,7 @@ builder.Services.AddSingleton<INotificationService, NotificationService>();
 builder.Services.AddScoped<IFundManagementService, FundManagementService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IBankBranchService, BankBranchService>();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddInfrastructure(builder.Configuration);
 

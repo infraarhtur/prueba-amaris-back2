@@ -11,6 +11,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<Client> Clients => Set<Client>();
+    public DbSet<BankBranch> BankBranches => Set<BankBranch>();
     public DbSet<Fund> Funds => Set<Fund>();
     public DbSet<Subscription> Subscriptions => Set<Subscription>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
@@ -19,6 +20,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new ClientConfiguration());
+        modelBuilder.ApplyConfiguration(new BankBranchConfiguration());
         modelBuilder.ApplyConfiguration(new FundConfiguration());
         modelBuilder.ApplyConfiguration(new SubscriptionConfiguration());
         modelBuilder.ApplyConfiguration(new TransactionConfiguration());

@@ -29,6 +29,7 @@ public static class DependencyInjection
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
 
         services.AddScoped<IClientRepository, ClientRepository>();
+        services.AddScoped<IBankBranchRepository, BankBranchRepository>();
         services.AddScoped<IFundRepository, FundRepository>();
         services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
