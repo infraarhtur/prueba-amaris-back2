@@ -10,7 +10,14 @@ public static class DomainToDtoMapper
         new(fund.Id, fund.Name, fund.MinimumAmount, fund.Category.ToString());
 
     public static SubscriptionDto ToDto(this Subscription subscription) =>
-        new(subscription.Id, subscription.FundId, subscription.Amount, subscription.SubscribedAtUtc, subscription.IsActive);
+        new(
+            subscription.Id,
+            subscription.ClientId,
+            subscription.FundId,
+            subscription.Amount,
+            subscription.SubscribedAtUtc,
+            subscription.CancelledAtUtc,
+            subscription.IsActive);
 
     public static TransactionDto ToDto(this Transaction transaction) =>
         new(transaction.Id, transaction.SubscriptionId, transaction.FundId, transaction.Amount, transaction.Type.ToString(), transaction.OccurredAtUtc);

@@ -21,7 +21,7 @@ public class SubscriptionsController(IFundManagementService fundManagementServic
     public async Task<ActionResult<SubscriptionDto>> SubscribeAsync([FromBody] SubscriptionRequestDto request, CancellationToken cancellationToken)
     {
         var subscription = await fundManagementService.SubscribeAsync(request, cancellationToken);
-        return Created($"api/subscriptions/{subscription.SubscriptionId}", subscription);
+        return Created($"api/subscriptions/{subscription.Id}", subscription);
     }
 
     [HttpPost("{subscriptionId:guid}/cancel")]
