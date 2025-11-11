@@ -13,6 +13,8 @@ public class ClientController(
     IFundManagementService fundManagementService,
     IClientService clientService) : ControllerBase
 {
+    private const string GetClientByIdRouteName = "GetClientById";
+
     private readonly IFundManagementService _fundManagementService = fundManagementService ?? throw new ArgumentNullException(nameof(fundManagementService));
     private readonly IClientService _clientService = clientService ?? throw new ArgumentNullException(nameof(clientService));
 
@@ -32,7 +34,7 @@ public class ClientController(
         return Ok(clients);
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = GetClientByIdRouteName)]
     [ProducesResponseType(typeof(ClientDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ClientDto>> GetClientByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -47,7 +49,7 @@ public class ClientController(
     public async Task<ActionResult<ClientDto>> CreateClientAsync([FromBody] ClientCreateRequestDto request, CancellationToken cancellationToken)
     {
         var created = await _clientService.CreateAsync(request, cancellationToken).ConfigureAwait(false);
-        return CreatedAtAction(nameof(GetClientByIdAsync), new { id = created.Id }, created);
+        return CreatedAtRoute(GetClientByIdRouteName, new { id = created.Id }, created);
     }
 
     [HttpPut("{id:guid}")]
