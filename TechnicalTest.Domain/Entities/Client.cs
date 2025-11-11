@@ -7,7 +7,11 @@ public class Client
 {
     public const decimal InitialBalance = 500_000m;
 
-    public Client(Guid id, decimal balance = InitialBalance, NotificationChannel notificationChannel = NotificationChannel.Email)
+    public Client(
+        Guid id,
+        decimal balance = InitialBalance,
+        NotificationChannel notificationChannel = NotificationChannel.Email,
+        DateTime? createdAtUtc = null)
     {
         if (balance < 0)
         {
@@ -17,11 +21,13 @@ public class Client
         Id = id;
         Balance = balance;
         NotificationChannel = notificationChannel;
+        CreatedAtUtc = createdAtUtc ?? DateTime.UtcNow;
     }
 
     public Guid Id { get; }
     public decimal Balance { get; private set; }
     public NotificationChannel NotificationChannel { get; private set; }
+    public DateTime CreatedAtUtc { get; private init; }
 
     public void Debit(decimal amount, string? fundName = null)
     {

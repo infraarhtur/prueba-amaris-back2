@@ -103,7 +103,12 @@ public class FundManagementService : IFundManagementService
             _client.UpdateNotificationChannel(channel);
             _client.Debit(request.Amount, fund.Name);
 
-            var subscription = new Subscription(Guid.NewGuid(), fund.Id, request.Amount, _timeProvider.GetUtcNow().UtcDateTime);
+            var subscription = new Subscription(
+                Guid.NewGuid(),
+                _client.Id,
+                fund.Id,
+                request.Amount,
+                _timeProvider.GetUtcNow().UtcDateTime);
             _subscriptions.Add(subscription);
 
             var transaction = new Transaction(Guid.NewGuid(), subscription.Id, fund.Id, request.Amount, TransactionType.Subscription, _timeProvider.GetUtcNow().UtcDateTime);
