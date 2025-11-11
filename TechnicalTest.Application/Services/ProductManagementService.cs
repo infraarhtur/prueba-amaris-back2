@@ -1,33 +1,33 @@
 using System.Linq;
 using TechnicalTest.Application.DTOs;
 using TechnicalTest.Application.Interfaces;
-using TechnicalTest.Application.Mappers;
 using TechnicalTest.Application.Interfaces.Repositories;
+using TechnicalTest.Application.Mappers;
 using TechnicalTest.Domain.Entities;
 using TechnicalTest.Domain.Enums;
 using TechnicalTest.Domain.Exceptions;
 
 namespace TechnicalTest.Application.Services;
 
-public class FundManagementService : IFundManagementService
+public class ProductManagementService : IProductManagementService
 {
     private readonly IClientRepository _clientRepository;
-    private readonly IFundRepository _fundRepository;
+    private readonly IProductRepository _productRepository;
     private readonly ISubscriptionRepository _subscriptionRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly INotificationService _notificationService;
     private readonly TimeProvider _timeProvider;
 
-    public FundManagementService(
+    public ProductManagementService(
         IClientRepository clientRepository,
-        IFundRepository fundRepository,
+        IProductRepository productRepository,
         ISubscriptionRepository subscriptionRepository,
         ITransactionRepository transactionRepository,
         INotificationService notificationService,
         TimeProvider? timeProvider = null)
     {
         _clientRepository = clientRepository ?? throw new ArgumentNullException(nameof(clientRepository));
-        _fundRepository = fundRepository ?? throw new ArgumentNullException(nameof(fundRepository));
+        _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         _subscriptionRepository = subscriptionRepository ?? throw new ArgumentNullException(nameof(subscriptionRepository));
         _transactionRepository = transactionRepository ?? throw new ArgumentNullException(nameof(transactionRepository));
         _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
@@ -41,11 +41,62 @@ public class FundManagementService : IFundManagementService
         return client.ToDto();
     }
 
-    public async Task<IReadOnlyCollection<FundDto>> GetFundsAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyCollection<ProductDto>> GetProductsAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var funds = await _fundRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
-        return funds.Select(fund => fund.ToDto()).ToArray();
+        var products = await _productRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
+        return products.Select(product => product.ToDto()).ToArray();
+    }
+
+    public async Task<ProductDto> GetProductByIdAsync(int id, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var product = await _productRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false)
+                      ?? throw new DomainException($"No se encontró el producto con id {id}.");
+        return product.ToDto();
+    }
+
+    public async Task<ProductDto> CreateProductAsync(ProductCreateRequestDto request, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var existing = await _productRepository.GetByIdAsync(request.Id, cancellationToken).ConfigureAwait(false);
+        if (existing is not null)
+        {
+            throw new DomainException($"Ya existe un producto con id {request.Id}.");
+        }
+
+        var category = ParseCategory(request.Category);
+        var product = new Product(request.Id, request.Name, request.MinimumAmount, category);
+
+        await _productRepository.AddAsync(product, cancellationToken).ConfigureAwait(false);
+        return product.ToDto();
+    }
+
+    public async Task<ProductDto> UpdateProductAsync(int id, ProductUpdateRequestDto request, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var existing = await _productRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false)
+                      ?? throw new DomainException($"No se encontró el producto con id {id}.");
+
+        var category = ParseCategory(request.Category);
+        var updated = new Product(existing.Id, request.Name, request.MinimumAmount, category);
+
+        await _productRepository.UpdateAsync(updated, cancellationToken).ConfigureAwait(false);
+        return updated.ToDto();
+    }
+
+    public async Task DeleteProductAsync(int id, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var existing = await _productRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false)
+                      ?? throw new DomainException($"No se encontró el producto con id {id}.");
+
+        await _productRepository.DeleteAsync(existing, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IReadOnlyCollection<SubscriptionDto>> GetSubscriptionsAsync(CancellationToken cancellationToken)
@@ -69,29 +120,29 @@ public class FundManagementService : IFundManagementService
         ArgumentNullException.ThrowIfNull(request);
 
         cancellationToken.ThrowIfCancellationRequested();
-        var fund = await _fundRepository.GetByIdAsync(request.FundId, cancellationToken).ConfigureAwait(false)
-                   ?? throw new DomainException($"No se encontró el fondo con id {request.FundId}.");
+        var product = await _productRepository.GetByIdAsync(request.ProductId, cancellationToken).ConfigureAwait(false)
+                      ?? throw new DomainException($"No se encontró el producto con id {request.ProductId}.");
 
-        if (request.Amount < fund.MinimumAmount)
+        if (request.Amount < product.MinimumAmount)
         {
-            throw new DomainException($"El monto mínimo para el fondo {fund.Name} es {fund.MinimumAmount:C}.");
+            throw new DomainException($"El monto mínimo para el producto {product.Name} es {product.MinimumAmount:C}.");
         }
 
         var client = await GetDefaultClientAsync(cancellationToken).ConfigureAwait(false);
         var channel = DomainToDtoMapper.ParseChannel(request.NotificationChannel);
 
         client.UpdateNotificationChannel(channel);
-        client.Debit(request.Amount, fund.Name);
+        client.Debit(request.Amount, product.Name);
         await _clientRepository.UpdateAsync(client, cancellationToken).ConfigureAwait(false);
 
         var nowUtc = _timeProvider.GetUtcNow().UtcDateTime;
-        var subscription = new Subscription(Guid.NewGuid(), client.Id, fund.Id, request.Amount, nowUtc);
+        var subscription = new Subscription(Guid.NewGuid(), client.Id, product.Id, request.Amount, nowUtc);
         await _subscriptionRepository.AddAsync(subscription, cancellationToken).ConfigureAwait(false);
 
-        var transaction = new Transaction(Guid.NewGuid(), subscription.Id, fund.Id, request.Amount, TransactionType.Subscription, nowUtc);
+        var transaction = new Transaction(Guid.NewGuid(), subscription.Id, product.Id, request.Amount, TransactionType.Subscription, nowUtc);
         await _transactionRepository.AddAsync(transaction, cancellationToken).ConfigureAwait(false);
 
-        await _notificationService.NotifyAsync(client, fund, channel, cancellationToken).ConfigureAwait(false);
+        await _notificationService.NotifyAsync(client, product, channel, cancellationToken).ConfigureAwait(false);
 
         return subscription.ToDto();
     }
@@ -107,8 +158,8 @@ public class FundManagementService : IFundManagementService
             throw new DomainException("La suscripción ya se encuentra cancelada.");
         }
 
-        var fund = await _fundRepository.GetByIdAsync(subscription.FundId, cancellationToken).ConfigureAwait(false)
-                   ?? throw new DomainException($"No se encontró el fondo con id {subscription.FundId}.");
+        var product = await _productRepository.GetByIdAsync(subscription.ProductId, cancellationToken).ConfigureAwait(false)
+                      ?? throw new DomainException($"No se encontró el producto con id {subscription.ProductId}.");
 
         var client = await _clientRepository.GetByIdAsync(subscription.ClientId, cancellationToken).ConfigureAwait(false)
                      ?? throw new DomainException("No se encontró el cliente asociado a la suscripción.");
@@ -121,7 +172,7 @@ public class FundManagementService : IFundManagementService
         client.Credit(subscription.Amount);
         await _clientRepository.UpdateAsync(client, cancellationToken).ConfigureAwait(false);
 
-        var transaction = new Transaction(Guid.NewGuid(), subscription.Id, fund.Id, subscription.Amount, TransactionType.Cancellation, nowUtc);
+        var transaction = new Transaction(Guid.NewGuid(), subscription.Id, product.Id, subscription.Amount, TransactionType.Cancellation, nowUtc);
         await _transactionRepository.AddAsync(transaction, cancellationToken).ConfigureAwait(false);
 
         return subscription.ToDto();
@@ -131,5 +182,16 @@ public class FundManagementService : IFundManagementService
     {
         return await _clientRepository.GetDefaultAsync(cancellationToken).ConfigureAwait(false);
     }
+
+    private static ProductCategory ParseCategory(string category)
+    {
+        if (Enum.TryParse<ProductCategory>(category, true, out var parsed))
+        {
+            return parsed;
+        }
+
+        throw new DomainException($"Categoría de producto desconocida: {category}.");
+    }
 }
+
 

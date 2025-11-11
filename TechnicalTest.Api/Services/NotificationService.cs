@@ -6,9 +6,9 @@ namespace TechnicalTest.Api.Services;
 
 public class NotificationService(ILogger<NotificationService> logger) : INotificationService
 {
-    public Task NotifyAsync(Client client, Fund fund, NotificationChannel channel, CancellationToken cancellationToken)
+    public Task NotifyAsync(Client client, Product product, NotificationChannel channel, CancellationToken cancellationToken)
     {
-        var message = $"Se ha suscrito al fondo {fund.Name} por {channel}. Monto disponible: {client.Balance:C}.";
+        var message = $"Se ha suscrito al producto {product.Name} por {channel}. Monto disponible: {client.Balance:C}.";
         switch (channel)
         {
             case NotificationChannel.Email:

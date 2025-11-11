@@ -10,19 +10,19 @@ namespace TechnicalTest.Api.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 public class ClientController(
-    IFundManagementService fundManagementService,
+    IProductManagementService productManagementService,
     IClientService clientService) : ControllerBase
 {
     private const string GetClientByIdRouteName = "GetClientById";
 
-    private readonly IFundManagementService _fundManagementService = fundManagementService ?? throw new ArgumentNullException(nameof(fundManagementService));
+    private readonly IProductManagementService _productManagementService = productManagementService ?? throw new ArgumentNullException(nameof(productManagementService));
     private readonly IClientService _clientService = clientService ?? throw new ArgumentNullException(nameof(clientService));
 
     [HttpGet("balance")]
     [ProducesResponseType(typeof(ClientBalanceDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<ClientBalanceDto>> GetDefaultClientBalanceAsync(CancellationToken cancellationToken)
     {
-        var client = await _fundManagementService.GetClientAsync(cancellationToken).ConfigureAwait(false);
+        var client = await _productManagementService.GetClientAsync(cancellationToken).ConfigureAwait(false);
         return Ok(client);
     }
 

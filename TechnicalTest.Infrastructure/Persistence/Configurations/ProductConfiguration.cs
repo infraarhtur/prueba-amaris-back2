@@ -4,30 +4,31 @@ using TechnicalTest.Domain.Entities;
 
 namespace TechnicalTest.Infrastructure.Persistence.Configurations;
 
-public class FundConfiguration : IEntityTypeConfiguration<Fund>
+public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
-    public void Configure(EntityTypeBuilder<Fund> builder)
+    public void Configure(EntityTypeBuilder<Product> builder)
     {
-        builder.ToTable("funds");
+        builder.ToTable("products");
 
-        builder.HasKey(fund => fund.Id);
+        builder.HasKey(product => product.Id);
 
-        builder.Property(fund => fund.Id)
+        builder.Property(product => product.Id)
             .HasColumnName("id")
             .ValueGeneratedNever();
 
-        builder.Property(fund => fund.Name)
+        builder.Property(product => product.Name)
             .HasColumnName("name")
             .HasMaxLength(200)
             .IsRequired();
 
-        builder.Property(fund => fund.MinimumAmount)
+        builder.Property(product => product.MinimumAmount)
             .HasColumnName("minimum_amount")
             .HasColumnType("numeric(18,2)");
 
-        builder.Property(fund => fund.Category)
+        builder.Property(product => product.Category)
             .HasColumnName("category")
             .HasConversion<int>();
     }
 }
+
 

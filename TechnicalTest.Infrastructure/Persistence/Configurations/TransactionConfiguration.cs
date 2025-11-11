@@ -19,8 +19,8 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
         builder.Property(transaction => transaction.SubscriptionId)
             .HasColumnName("subscription_id");
 
-        builder.Property(transaction => transaction.FundId)
-            .HasColumnName("fund_id");
+        builder.Property(transaction => transaction.ProductId)
+            .HasColumnName("product_id");
 
         builder.Property(transaction => transaction.Amount)
             .HasColumnName("amount")
@@ -39,9 +39,9 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
             .HasForeignKey(transaction => transaction.SubscriptionId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne<Fund>()
+        builder.HasOne<Product>()
             .WithMany()
-            .HasForeignKey(transaction => transaction.FundId)
+            .HasForeignKey(transaction => transaction.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

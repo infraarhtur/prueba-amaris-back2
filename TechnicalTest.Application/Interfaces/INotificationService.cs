@@ -5,6 +5,6 @@ namespace TechnicalTest.Application.Interfaces;
 
 public interface INotificationService
 {
-    Task NotifyAsync(Client client, Fund fund, NotificationChannel channel, CancellationToken cancellationToken);
+    Task NotifyAsync(Client client, Product product, NotificationChannel channel, CancellationToken cancellationToken);
 }
 

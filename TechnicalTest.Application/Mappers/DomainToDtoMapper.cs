@@ -6,21 +6,21 @@ namespace TechnicalTest.Application.Mappers;
 
 public static class DomainToDtoMapper
 {
-    public static FundDto ToDto(this Fund fund) =>
-        new(fund.Id, fund.Name, fund.MinimumAmount, fund.Category.ToString());
+    public static ProductDto ToDto(this Product product) =>
+        new(product.Id, product.Name, product.MinimumAmount, product.Category.ToString());
 
     public static SubscriptionDto ToDto(this Subscription subscription) =>
         new(
             subscription.Id,
             subscription.ClientId,
-            subscription.FundId,
+            subscription.ProductId,
             subscription.Amount,
             subscription.SubscribedAtUtc,
             subscription.CancelledAtUtc,
             subscription.IsActive);
 
     public static TransactionDto ToDto(this Transaction transaction) =>
-        new(transaction.Id, transaction.SubscriptionId, transaction.FundId, transaction.Amount, transaction.Type.ToString(), transaction.OccurredAtUtc);
+        new(transaction.Id, transaction.SubscriptionId, transaction.ProductId, transaction.Amount, transaction.Type.ToString(), transaction.OccurredAtUtc);
 
     public static ClientBalanceDto ToDto(this Client client) =>
         new(client.Id, client.Balance, client.NotificationChannel.ToString());

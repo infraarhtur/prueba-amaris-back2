@@ -40,7 +40,7 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<AuthorizeCheckOperationFilter>();
 });
 builder.Services.AddSingleton<INotificationService, NotificationService>();
-builder.Services.AddScoped<IFundManagementService, FundManagementService>();
+builder.Services.AddScoped<IProductManagementService, ProductManagementService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IBankBranchService, BankBranchService>();

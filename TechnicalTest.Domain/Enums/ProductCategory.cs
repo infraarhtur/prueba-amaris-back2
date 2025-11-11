@@ -1,8 +1,9 @@
 namespace TechnicalTest.Domain.Enums;
 
-public enum FundCategory
+public enum ProductCategory
 {
     FPV,
     FIC
 }
+
 

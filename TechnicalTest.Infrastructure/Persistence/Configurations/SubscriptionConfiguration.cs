@@ -19,8 +19,8 @@ public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
         builder.Property(subscription => subscription.ClientId)
             .HasColumnName("client_id");
 
-        builder.Property(subscription => subscription.FundId)
-            .HasColumnName("fund_id");
+        builder.Property(subscription => subscription.ProductId)
+            .HasColumnName("product_id");
 
         builder.Property(subscription => subscription.Amount)
             .HasColumnName("amount")
@@ -41,9 +41,9 @@ public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
             .HasForeignKey(subscription => subscription.ClientId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne<Fund>()
+        builder.HasOne<Product>()
             .WithMany()
-            .HasForeignKey(subscription => subscription.FundId)
+            .HasForeignKey(subscription => subscription.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

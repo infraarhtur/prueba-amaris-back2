@@ -30,7 +30,7 @@ public static class DependencyInjection
 
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IBankBranchRepository, BankBranchRepository>();
-        services.AddScoped<IFundRepository, FundRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IUserRepository, UserRepository>();

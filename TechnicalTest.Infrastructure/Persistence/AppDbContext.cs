@@ -12,7 +12,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<User> Users => Set<User>();
     public DbSet<Client> Clients => Set<Client>();
     public DbSet<BankBranch> BankBranches => Set<BankBranch>();
-    public DbSet<Fund> Funds => Set<Fund>();
+    public DbSet<Product> Products => Set<Product>();
     public DbSet<Subscription> Subscriptions => Set<Subscription>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
 
@@ -21,7 +21,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new ClientConfiguration());
         modelBuilder.ApplyConfiguration(new BankBranchConfiguration());
-        modelBuilder.ApplyConfiguration(new FundConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductConfiguration());
         modelBuilder.ApplyConfiguration(new SubscriptionConfiguration());
         modelBuilder.ApplyConfiguration(new TransactionConfiguration());
 
@@ -37,17 +37,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             CreatedAtUtc = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
         };
 
-        var seedFunds = FundCatalog.GetDefaultFunds()
-            .Select(fund => new
+        var seedProducts = ProductCatalog.GetDefaultProducts()
+            .Select(product => new
             {
-                fund.Id,
-                fund.Name,
-                fund.MinimumAmount,
-                fund.Category
+                product.Id,
+                product.Name,
+                product.MinimumAmount,
+                product.Category
             });
 
         modelBuilder.Entity<Client>().HasData(seedClient);
-        modelBuilder.Entity<Fund>().HasData(seedFunds);
+        modelBuilder.Entity<Product>().HasData(seedProducts);
     }
 }
 

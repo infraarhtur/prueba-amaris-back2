@@ -3,23 +3,23 @@ using TechnicalTest.Domain.Exceptions;
 
 namespace TechnicalTest.Domain.Entities;
 
-public class Fund
+public class Product
 {
-    private Fund()
+    private Product()
     {
         Name = string.Empty;
     }
 
-    public Fund(int id, string name, decimal minimumAmount, FundCategory category)
+    public Product(int id, string name, decimal minimumAmount, ProductCategory category)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            throw new DomainException("El nombre del fondo es obligatorio.");
+            throw new DomainException("El nombre del producto es obligatorio.");
         }
 
         if (minimumAmount <= 0)
         {
-            throw new DomainException("El monto mínimo del fondo debe ser mayor a cero.");
+            throw new DomainException("El monto mínimo del producto debe ser mayor a cero.");
         }
 
         Id = id;
@@ -31,6 +31,7 @@ public class Fund
     public int Id { get; private set; }
     public string Name { get; private set; }
     public decimal MinimumAmount { get; private set; }
-    public FundCategory Category { get; private set; }
+    public ProductCategory Category { get; private set; }
 }
+
 

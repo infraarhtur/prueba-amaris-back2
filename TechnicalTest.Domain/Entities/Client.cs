@@ -40,15 +40,15 @@ public class Client
     public NotificationChannel NotificationChannel { get; private set; }
     public DateTime CreatedAtUtc { get; private set; }
 
-    public void Debit(decimal amount, string? fundName = null)
+    public void Debit(decimal amount, string? productName = null)
     {
         ValidateAmount(amount);
 
         if (Balance < amount)
         {
-            var message = fundName is null
+            var message = productName is null
                 ? "No tiene saldo disponible para realizar la transacción."
-                : $"No tiene saldo disponible para vincularse al fondo {fundName}.";
+                : $"No tiene saldo disponible para vincularse al producto {productName}.";
 
             throw new DomainException(message);
         }

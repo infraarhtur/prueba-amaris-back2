@@ -8,11 +8,11 @@ public class Transaction
     {
     }
 
-    public Transaction(Guid id, Guid subscriptionId, int fundId, decimal amount, TransactionType type, DateTime occurredAtUtc)
+    public Transaction(Guid id, Guid subscriptionId, int productId, decimal amount, TransactionType type, DateTime occurredAtUtc)
     {
         Id = id;
         SubscriptionId = subscriptionId;
-        FundId = fundId;
+        ProductId = productId;
         Amount = amount;
         Type = type;
         OccurredAtUtc = occurredAtUtc;
@@ -20,7 +20,7 @@ public class Transaction
 
     public Guid Id { get; private set; }
     public Guid SubscriptionId { get; private set; }
-    public int FundId { get; private set; }
+    public int ProductId { get; private set; }
     public decimal Amount { get; private set; }
     public TransactionType Type { get; private set; }
     public DateTime OccurredAtUtc { get; private set; }
