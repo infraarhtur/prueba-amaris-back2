@@ -1,3 +1,4 @@
+using HealthChecks.NpgSql;
 using TechnicalTest.Api.Services;
 using TechnicalTest.Application.Interfaces;
 using TechnicalTest.Application.Services;
@@ -25,6 +26,17 @@ builder.Services.AddSingleton<INotificationService, NotificationService>();
 builder.Services.AddScoped<IFundManagementService, FundManagementService>();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddInfrastructure(builder.Configuration);
+
+var connectionString = builder.Configuration.GetConnectionString("Default")
+                      ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
+}
+
+builder.Services.AddHealthChecks()
+    .AddNpgSql(connectionString);
 
 var app = builder.Build();
 
@@ -62,6 +74,7 @@ app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "TechnicalTest API v1");
 });
+app.MapHealthChecks("/health");
 app.MapControllers();
 
 app.Run();
