@@ -9,28 +9,33 @@ public class Client
 
     private Client()
     {
+        FirstName = string.Empty;
+        LastName = string.Empty;
+        City = string.Empty;
         NotificationChannel = NotificationChannel.Email;
         CreatedAtUtc = DateTime.UtcNow;
     }
 
     public Client(
         Guid id,
+        string firstName,
+        string lastName,
+        string city,
         decimal balance = InitialBalance,
         NotificationChannel notificationChannel = NotificationChannel.Email,
         DateTime? createdAtUtc = null)
     {
-        if (balance < 0)
-        {
-            throw new DomainException("El saldo inicial del cliente no puede ser negativo.");
-        }
-
         Id = id;
-        Balance = balance;
+        UpdatePersonalInfo(firstName, lastName, city);
+        UpdateBalance(balance);
         NotificationChannel = notificationChannel;
         CreatedAtUtc = createdAtUtc ?? DateTime.UtcNow;
     }
 
     public Guid Id { get; private set; }
+    public string FirstName { get; private set; }
+    public string LastName { get; private set; }
+    public string City { get; private set; }
     public decimal Balance { get; private set; }
     public NotificationChannel NotificationChannel { get; private set; }
     public DateTime CreatedAtUtc { get; private set; }
@@ -57,9 +62,26 @@ public class Client
         Balance += amount;
     }
 
+    public void UpdatePersonalInfo(string firstName, string lastName, string city)
+    {
+        FirstName = NormalizeRequiredText(firstName, nameof(firstName));
+        LastName = NormalizeRequiredText(lastName, nameof(lastName));
+        City = NormalizeRequiredText(city, nameof(city));
+    }
+
     public void UpdateNotificationChannel(NotificationChannel channel)
     {
         NotificationChannel = channel;
+    }
+
+    public void UpdateBalance(decimal balance)
+    {
+        if (balance < 0)
+        {
+            throw new DomainException("El saldo del cliente no puede ser negativo.");
+        }
+
+        Balance = balance;
     }
 
     private static void ValidateAmount(decimal amount)
@@ -68,6 +90,16 @@ public class Client
         {
             throw new DomainException("El monto debe ser mayor a cero.");
         }
+    }
+
+    private static string NormalizeRequiredText(string value, string fieldName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new DomainException($"El campo {fieldName} es requerido.");
+        }
+
+        return value.Trim();
     }
 }
 

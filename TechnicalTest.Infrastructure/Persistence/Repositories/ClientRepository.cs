@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using TechnicalTest.Application.Interfaces.Repositories;
 using TechnicalTest.Domain.Entities;
 
@@ -21,11 +22,21 @@ public class ClientRepository(AppDbContext dbContext) : IClientRepository
             return client;
         }
 
-        var newClient = new Client(DefaultClientId);
+        var newClient = new Client(DefaultClientId, "Demo", "Client", "Bogota");
         await _dbContext.Clients.AddAsync(newClient, cancellationToken).ConfigureAwait(false);
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return newClient;
+    }
+
+    public async Task<IReadOnlyCollection<Client>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Clients
+            .AsNoTracking()
+            .OrderBy(client => client.FirstName)
+            .ThenBy(client => client.LastName)
+            .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
     }
 
     public async Task<Client?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -49,6 +60,14 @@ public class ClientRepository(AppDbContext dbContext) : IClientRepository
         ArgumentNullException.ThrowIfNull(client);
 
         _dbContext.Clients.Update(client);
+        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task DeleteAsync(Client client, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(client);
+
+        _dbContext.Clients.Remove(client);
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }
 }

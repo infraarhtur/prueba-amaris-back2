@@ -25,6 +25,16 @@ public static class DomainToDtoMapper
     public static ClientBalanceDto ToDto(this Client client) =>
         new(client.Id, client.Balance, client.NotificationChannel.ToString());
 
+    public static ClientDto ToClientDto(this Client client) =>
+        new(
+            client.Id,
+            client.FirstName,
+            client.LastName,
+            client.City,
+            client.Balance,
+            client.NotificationChannel.ToString(),
+            client.CreatedAtUtc);
+
     public static UserDto ToDto(this User user) =>
         new(user.Id, user.Email, user.FullName);
 
@@ -32,5 +42,8 @@ public static class DomainToDtoMapper
         Enum.TryParse<NotificationChannel>(channel, true, out var parsed)
             ? parsed
             : throw new ArgumentException($"Canal de notificación desconocido: {channel}", nameof(channel));
+
+    public static NotificationChannel ParseChannelOrDefault(string? channel, NotificationChannel defaultChannel) =>
+        string.IsNullOrWhiteSpace(channel) ? defaultChannel : ParseChannel(channel);
 }
 

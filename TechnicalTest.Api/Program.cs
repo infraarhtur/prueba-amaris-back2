@@ -41,6 +41,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddSingleton<INotificationService, NotificationService>();
 builder.Services.AddScoped<IFundManagementService, FundManagementService>();
+builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -95,6 +96,12 @@ app.UseExceptionHandler(errorApp =>
 
         var problemDetails = exception switch
         {
+            NotFoundException notFoundException => new ProblemDetails
+            {
+                Title = "Recurso no encontrado",
+                Detail = notFoundException.Message,
+                Status = StatusCodes.Status404NotFound
+            },
             DomainException domainException => new ProblemDetails
             {
                 Title = "Regla de negocio incumplida",

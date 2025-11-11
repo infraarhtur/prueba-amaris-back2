@@ -27,6 +27,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         var seedClient = new
         {
             Id = seedClientId,
+            FirstName = "Demo",
+            LastName = "Client",
+            City = "Bogota",
             Balance = Client.InitialBalance,
             NotificationChannel = NotificationChannel.Email,
             CreatedAtUtc = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
