@@ -14,6 +14,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<BankBranch> BankBranches => Set<BankBranch>();
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Availability> Availabilities => Set<Availability>();
+    public DbSet<Schedule> Schedules => Set<Schedule>();
     public DbSet<Subscription> Subscriptions => Set<Subscription>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
 
@@ -24,6 +25,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfiguration(new BankBranchConfiguration());
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
         modelBuilder.ApplyConfiguration(new AvailabilityConfiguration());
+        modelBuilder.ApplyConfiguration(new ScheduleConfiguration());
         modelBuilder.ApplyConfiguration(new SubscriptionConfiguration());
         modelBuilder.ApplyConfiguration(new TransactionConfiguration());
 
