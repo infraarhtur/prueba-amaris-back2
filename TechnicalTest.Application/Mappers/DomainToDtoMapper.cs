@@ -25,6 +25,9 @@ public static class DomainToDtoMapper
     public static ClientBalanceDto ToDto(this Client client) =>
         new(client.Id, client.Balance, client.NotificationChannel.ToString());
 
+    public static UserDto ToDto(this User user) =>
+        new(user.Id, user.Email, user.FullName);
+
     public static NotificationChannel ParseChannel(string channel) =>
         Enum.TryParse<NotificationChannel>(channel, true, out var parsed)
             ? parsed

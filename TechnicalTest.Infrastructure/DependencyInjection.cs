@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TechnicalTest.Application.Interfaces.Repositories;
+using TechnicalTest.Application.Interfaces.Security;
+using TechnicalTest.Infrastructure.Authentication;
 using TechnicalTest.Infrastructure.Persistence;
 using TechnicalTest.Infrastructure.Persistence.Repositories;
 
@@ -24,11 +26,15 @@ public static class DependencyInjection
         }
 
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
 
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IFundRepository, FundRepository>();
         services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IJwtProvider, JwtProvider>();
 
         return services;
     }
