@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using TechnicalTest.Application.DTOs;
 using TechnicalTest.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ namespace TechnicalTest.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class SubscriptionsController(IFundManagementService fundManagementService) : ControllerBase
 {
     [HttpGet]
