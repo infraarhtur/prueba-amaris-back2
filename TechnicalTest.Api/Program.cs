@@ -2,6 +2,7 @@ using TechnicalTest.Api.Services;
 using TechnicalTest.Application.Interfaces;
 using TechnicalTest.Application.Services;
 using TechnicalTest.Domain.Exceptions;
+using TechnicalTest.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -23,6 +24,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddSingleton<INotificationService, NotificationService>();
 builder.Services.AddSingleton<IFundManagementService, FundManagementService>();
 builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

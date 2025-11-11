@@ -5,6 +5,11 @@ namespace TechnicalTest.Domain.Entities;
 
 public class Fund
 {
+    private Fund()
+    {
+        Name = string.Empty;
+    }
+
     public Fund(int id, string name, decimal minimumAmount, FundCategory category)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -23,9 +28,9 @@ public class Fund
         Category = category;
     }
 
-    public int Id { get; }
-    public string Name { get; }
-    public decimal MinimumAmount { get; }
-    public FundCategory Category { get; }
+    public int Id { get; private set; }
+    public string Name { get; private set; }
+    public decimal MinimumAmount { get; private set; }
+    public FundCategory Category { get; private set; }
 }
 

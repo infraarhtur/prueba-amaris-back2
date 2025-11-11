@@ -1,5 +1,8 @@
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using TechnicalTest.Domain.Data;
 using TechnicalTest.Domain.Entities;
+using TechnicalTest.Domain.Enums;
 using TechnicalTest.Infrastructure.Persistence.Configurations;
 
 namespace TechnicalTest.Infrastructure.Persistence;
@@ -17,6 +20,27 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfiguration(new FundConfiguration());
         modelBuilder.ApplyConfiguration(new SubscriptionConfiguration());
         modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+
+        var seedClientId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        var seedClient = new
+        {
+            Id = seedClientId,
+            Balance = Client.InitialBalance,
+            NotificationChannel = NotificationChannel.Email,
+            CreatedAtUtc = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+        };
+
+        var seedFunds = FundCatalog.GetDefaultFunds()
+            .Select(fund => new
+            {
+                fund.Id,
+                fund.Name,
+                fund.MinimumAmount,
+                fund.Category
+            });
+
+        modelBuilder.Entity<Client>().HasData(seedClient);
+        modelBuilder.Entity<Fund>().HasData(seedFunds);
     }
 }
 

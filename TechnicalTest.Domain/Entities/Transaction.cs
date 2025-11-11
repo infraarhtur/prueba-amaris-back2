@@ -4,6 +4,10 @@ namespace TechnicalTest.Domain.Entities;
 
 public class Transaction
 {
+    private Transaction()
+    {
+    }
+
     public Transaction(Guid id, Guid subscriptionId, int fundId, decimal amount, TransactionType type, DateTime occurredAtUtc)
     {
         Id = id;
@@ -14,11 +18,11 @@ public class Transaction
         OccurredAtUtc = occurredAtUtc;
     }
 
-    public Guid Id { get; }
-    public Guid SubscriptionId { get; }
-    public int FundId { get; }
-    public decimal Amount { get; }
-    public TransactionType Type { get; }
-    public DateTime OccurredAtUtc { get; }
+    public Guid Id { get; private set; }
+    public Guid SubscriptionId { get; private set; }
+    public int FundId { get; private set; }
+    public decimal Amount { get; private set; }
+    public TransactionType Type { get; private set; }
+    public DateTime OccurredAtUtc { get; private set; }
 }
 

@@ -15,7 +15,8 @@ public static class DependencyInjection
     {
         ArgumentNullException.ThrowIfNull(configuration);
 
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("Default")
+                               ?? configuration.GetConnectionString("DefaultConnection");
 
         if (string.IsNullOrWhiteSpace(connectionString))
         {
