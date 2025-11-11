@@ -41,6 +41,9 @@ public static class DomainToDtoMapper
     public static BankBranchDto ToDto(this BankBranch bankBranch) =>
         new(bankBranch.Id, bankBranch.Name, bankBranch.City);
 
+    public static AvailabilityDto ToDto(this Availability availability) =>
+        new(availability.Id, availability.BankBranchId, availability.ProductId);
+
     public static NotificationChannel ParseChannel(string channel) =>
         Enum.TryParse<NotificationChannel>(channel, true, out var parsed)
             ? parsed
