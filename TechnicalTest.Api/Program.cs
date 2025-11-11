@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 builder.Services.AddSingleton<INotificationService, NotificationService>();
-builder.Services.AddSingleton<IFundManagementService, FundManagementService>();
+builder.Services.AddScoped<IFundManagementService, FundManagementService>();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddInfrastructure(builder.Configuration);
 
