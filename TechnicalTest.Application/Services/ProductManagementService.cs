@@ -99,8 +99,7 @@ public class ProductManagementService : IProductManagementService
     public async Task<IReadOnlyCollection<SubscriptionDto>> GetSubscriptionsAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var client = await GetDefaultClientAsync(cancellationToken).ConfigureAwait(false);
-        var subscriptions = await _subscriptionRepository.GetByClientIdAsync(client.Id, cancellationToken).ConfigureAwait(false);
+        var subscriptions = await _subscriptionRepository.GetAllAsync(cancellationToken).ConfigureAwait(false);
         return subscriptions.Select(subscription => subscription.ToDto()).ToArray();
     }
 
@@ -112,20 +111,17 @@ public class ProductManagementService : IProductManagementService
         var product = await _productRepository.GetByIdAsync(request.ProductId, cancellationToken).ConfigureAwait(false)
                       ?? throw new DomainException($"No se encontró el producto con id {request.ProductId}.");
 
-        if (request.Amount < product.MinimumAmount)
-        {
-            throw new DomainException($"El monto mínimo para el producto {product.Name} es {product.MinimumAmount:C}.");
-        }
+        var client = await _clientRepository.GetByIdAsync(request.ClientId, cancellationToken).ConfigureAwait(false)
+                     ?? throw new DomainException($"No se encontró el cliente con id {request.ClientId}.");
 
-        var client = await GetDefaultClientAsync(cancellationToken).ConfigureAwait(false);
-        var channel = DomainToDtoMapper.ParseChannel(request.NotificationChannel);
+        var subscriptionAmount = product.MinimumAmount;
+        var channel = client.NotificationChannel;
 
-        client.UpdateNotificationChannel(channel);
-        client.Debit(request.Amount, product.Name);
+        client.Debit(subscriptionAmount, product.Name);
         await _clientRepository.UpdateAsync(client, cancellationToken).ConfigureAwait(false);
 
         var nowUtc = _timeProvider.GetUtcNow().UtcDateTime;
-        var subscription = new Subscription(Guid.NewGuid(), client.Id, product.Id, request.Amount, nowUtc);
+        var subscription = new Subscription(Guid.NewGuid(), client.Id, product.Id, subscriptionAmount, nowUtc);
         await _subscriptionRepository.AddAsync(subscription, cancellationToken).ConfigureAwait(false);
 
         await _notificationService.NotifyAsync(client, product, channel, cancellationToken).ConfigureAwait(false);

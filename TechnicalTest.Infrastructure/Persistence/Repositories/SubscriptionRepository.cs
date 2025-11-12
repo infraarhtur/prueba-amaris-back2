@@ -28,6 +28,17 @@ public class SubscriptionRepository(AppDbContext dbContext) : ISubscriptionRepos
         return subscriptions;
     }
 
+    public async Task<IReadOnlyCollection<Subscription>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        var subscriptions = await _dbContext.Subscriptions
+            .AsNoTracking()
+            .OrderBy(subscription => subscription.SubscribedAtUtc)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        return subscriptions;
+    }
+
     public async Task AddAsync(Subscription subscription, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(subscription);
