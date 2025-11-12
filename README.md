@@ -1,39 +1,59 @@
 
-#configuracion en TechnicalTest.Api - program.cs
-## lineas para que cada vez que se construya o publique el proyecto se construya la BD
-var app = builder.Build();
+# Guía del Proyecto
 
+Este repositorio corresponde a la prueba técnica de Amaris desarrollada en .NET.  
+En las secciones siguientes encontrarás la configuración necesaria para aplicar migraciones automáticas, ejecutar pruebas unitarias y generar reportes de cobertura.
+
+## 1. Configuración de `TechnicalTest.Api`
+
+Para asegurarte de que la base de datos se migre cada vez que se construye o publica el proyecto, agrega el siguiente bloque en `Program.cs`:
+
+```csharp
+var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.Migrate();
 }
+```
 
+## 2. Pruebas unitarias
 
-# prueba-amaris-back2
-prueba tecnica amaris .net
+- **Ejecutar todas las pruebas**
 
-#unitest
-##correr pruebas unitarias general 
-dotnet test 
-## correr pruebas unitarias filtradas 
+  ```bash
+  dotnet test
+  ```
 
-dotnet test --filter subscriptions
+- **Ejecutar pruebas filtradas**
 
-##comandos para generar 
-### reporte xml
+  ```bash
+  dotnet test --filter subscriptions
+  ```
+
+## 3. Reportes de cobertura
+
+### 3.1 Generar reporte en formato XML
+
+```bash
 dotnet test /Users/arhtur/pruebaTecnicaAmaris/TechnicalTest.Solution.sln \
-     --collect:"XPlat Code Coverage" \
-     --results-directory /Users/arhtur/pruebaTecnicaAmaris/test/TestResults \
-     -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+  --collect:"XPlat Code Coverage" \
+  --results-directory /Users/arhtur/pruebaTecnicaAmaris/test/TestResults \
+  -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+```
 
-###instala el generador de reportes HTML
+### 3.2 Instalar el generador de reportes HTML
 
+```bash
 dotnet tool install --global dotnet-reportgenerator-globaltool
+```
 
-### reporte html
-   reportgenerator \
-     "-reports:/Users/arhtur/pruebaTecnicaAmaris/test/TestResults/**/coverage.cobertura.xml" \
-     "-targetdir:/Users/arhtur/pruebaTecnicaAmaris/test/TestResults/CoverageReport" \
-     "-reporttypes:Html"
+### 3.3 Generar reporte en formato HTML
+
+```bash
+reportgenerator \
+  "-reports:/Users/arhtur/pruebaTecnicaAmaris/test/TestResults/**/coverage.cobertura.xml" \
+  "-targetdir:/Users/arhtur/pruebaTecnicaAmaris/test/TestResults/CoverageReport" \
+  "-reporttypes:Html"
+```
