@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechnicalTest.Api", "Techni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechnicalTest.Infrastructure", "TechnicalTest.Infrastructure\TechnicalTest.Infrastructure.csproj", "{4CFF75B8-8108-4178-B9DF-23799317E098}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechnicalTest.Tests", "TechnicalTest.Tests\TechnicalTest.Tests.csproj", "{07983AB9-5963-4BD8-B832-5AB12ABFBC89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechnicalTest.Tests", "test\TechnicalTest.Tests\TechnicalTest.Tests.csproj", "{07983AB9-5963-4BD8-B832-5AB12ABFBC89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
