@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\TechnicalTest.Application\TechnicalTest.Application.csproj" />
     <ProjectReference Include="..\..\TechnicalTest.Domain\TechnicalTest.Domain.csproj" />
     <ProjectReference Include="..\..\TechnicalTest.Infrastructure\TechnicalTest.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\TechnicalTest.Api\TechnicalTest.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
