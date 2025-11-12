@@ -1,5 +1,6 @@
 services:
   api:
+    image: back-test-amaris:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -24,7 +25,7 @@ services:
       timeout: 5s
       retries: 5
     ports:
-      - "5432:5432"
+      - "5435:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 

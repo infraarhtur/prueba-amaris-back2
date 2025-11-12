@@ -1,3 +1,16 @@
+
+#configuracion en TechnicalTest.Api - program.cs
+## lineas para que cada vez que se construya o publique el proyecto se construya la BD
+var app = builder.Build();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
+
+
 # prueba-amaris-back2
 prueba tecnica amaris .net
 

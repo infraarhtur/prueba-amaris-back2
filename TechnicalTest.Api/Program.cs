@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TechnicalTest.Api.Swagger;
+using Microsoft.EntityFrameworkCore;
+using TechnicalTest.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -89,6 +91,13 @@ builder.Services.AddHealthChecks()
     .AddNpgSql(connectionString);
 
 var app = builder.Build();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
 
 app.UseExceptionHandler(errorApp =>
 {
