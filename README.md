@@ -57,3 +57,9 @@ reportgenerator \
   "-targetdir:/Users/arhtur/pruebaTecnicaAmaris/test/TestResults/CoverageReport" \
   "-reporttypes:Html"
 ```
+
+## 4. Integración continua (CI) con GitHub Actions
+
+- Este repositorio cuenta con un workflow básico en `.github/workflows/dotnet-ci.yml` que se ejecuta en cada `push` o `pull_request` hacia `main`.
+- El pipeline realiza los pasos `dotnet restore`, `dotnet build --configuration Release` y `dotnet test --configuration Release --collect:"XPlat Code Coverage"`.
+- Puedes revisar las ejecuciones desde la pestaña **Actions** del repositorio en GitHub y usarlo como base para agregar tareas adicionales (linters, build de contenedores, despliegues, etc.).
