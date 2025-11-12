@@ -15,8 +15,12 @@ dotnet test /Users/arhtur/pruebaTecnicaAmaris/TechnicalTest.Solution.sln \
      --results-directory /Users/arhtur/pruebaTecnicaAmaris/test/TestResults \
      -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
 
+###instala el generador de reportes HTML
+
+dotnet tool install --global dotnet-reportgenerator-globaltool
+
 ### reporte html
-      reportgenerator \
-     "-reports:/Users/arhtur/pruebaTecnicaAmaris/test/TestResults/**/coverage.cobertura.xml" \ 
+   reportgenerator \
+     "-reports:/Users/arhtur/pruebaTecnicaAmaris/test/TestResults/**/coverage.cobertura.xml" \
      "-targetdir:/Users/arhtur/pruebaTecnicaAmaris/test/TestResults/CoverageReport" \
      "-reporttypes:Html"
