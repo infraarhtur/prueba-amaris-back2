@@ -45,6 +45,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             FirstName = "Demo",
             LastName = "Client",
             City = "Bogota",
+            Email = "demo.client@amaris.com",
             Balance = Client.InitialBalance,
             NotificationChannel = NotificationChannel.Email,
             CreatedAtUtc = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)

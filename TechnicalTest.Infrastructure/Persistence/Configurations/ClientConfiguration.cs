@@ -35,6 +35,11 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
             .IsRequired()
             .HasMaxLength(120);
 
+        builder.Property(client => client.Email)
+            .HasColumnName("email")
+            .IsRequired()
+            .HasMaxLength(255);
+
         builder.Property(client => client.Balance)
             .HasColumnName("balance")
             .HasColumnType("numeric(18,2)");

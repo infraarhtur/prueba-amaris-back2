@@ -40,7 +40,7 @@ public class ClientRepository(AppDbContext dbContext) : IClientRepository
             await _dbContext.Users.AddAsync(seedUser, cancellationToken).ConfigureAwait(false);
         }
 
-        var newClient = new Client(DefaultClientId, DefaultUserId, "Demo", "Client", "Bogota");
+        var newClient = new Client(DefaultClientId, DefaultUserId, "Demo", "Client", "Bogota", DefaultUserEmail);
         await _dbContext.Clients.AddAsync(newClient, cancellationToken).ConfigureAwait(false);
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 

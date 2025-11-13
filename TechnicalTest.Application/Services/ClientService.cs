@@ -43,6 +43,7 @@ public class ClientService(IClientRepository clientRepository) : IClientService
             request.FirstName,
             request.LastName,
             request.City,
+            request.Email,
             balance,
             channel);
 
@@ -58,7 +59,7 @@ public class ClientService(IClientRepository clientRepository) : IClientService
         var existing = await _clientRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false)
                        ?? throw new NotFoundException("No se encontró el cliente solicitado.");
 
-        existing.UpdatePersonalInfo(request.FirstName, request.LastName, request.City);
+        existing.UpdatePersonalInfo(request.FirstName, request.LastName, request.City, request.Email);
 
         if (request.UserId.HasValue)
         {

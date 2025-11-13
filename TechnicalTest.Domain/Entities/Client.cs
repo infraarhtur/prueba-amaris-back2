@@ -12,6 +12,7 @@ public class Client
         FirstName = string.Empty;
         LastName = string.Empty;
         City = string.Empty;
+        Email = string.Empty;
         NotificationChannel = NotificationChannel.Email;
         CreatedAtUtc = DateTime.UtcNow;
     }
@@ -22,13 +23,14 @@ public class Client
         string firstName,
         string lastName,
         string city,
+        string email,
         decimal balance = InitialBalance,
         NotificationChannel notificationChannel = NotificationChannel.Email,
         DateTime? createdAtUtc = null)
     {
         Id = id;
         AssignUser(userId);
-        UpdatePersonalInfo(firstName, lastName, city);
+        UpdatePersonalInfo(firstName, lastName, city, email);
         UpdateBalance(balance);
         NotificationChannel = notificationChannel;
         CreatedAtUtc = createdAtUtc ?? DateTime.UtcNow;
@@ -40,6 +42,7 @@ public class Client
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public string City { get; private set; }
+    public string Email { get; private set; }
     public decimal Balance { get; private set; }
     public NotificationChannel NotificationChannel { get; private set; }
     public DateTime CreatedAtUtc { get; private set; }
@@ -66,11 +69,12 @@ public class Client
         Balance += amount;
     }
 
-    public void UpdatePersonalInfo(string firstName, string lastName, string city)
+    public void UpdatePersonalInfo(string firstName, string lastName, string city, string email)
     {
         FirstName = NormalizeRequiredText(firstName, nameof(firstName));
         LastName = NormalizeRequiredText(lastName, nameof(lastName));
         City = NormalizeRequiredText(city, nameof(city));
+        Email = ValidateAndNormalizeEmail(email);
     }
 
     public void UpdateNotificationChannel(NotificationChannel channel)
@@ -114,6 +118,23 @@ public class Client
         }
 
         return value.Trim();
+    }
+
+    private static string ValidateAndNormalizeEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            throw new DomainException("El campo email es requerido.");
+        }
+
+        var normalizedEmail = email.Trim().ToLowerInvariant();
+
+        if (!normalizedEmail.Contains('@') || normalizedEmail.Length < 5)
+        {
+            throw new DomainException("El formato del email no es válido.");
+        }
+
+        return normalizedEmail;
     }
 }
 
