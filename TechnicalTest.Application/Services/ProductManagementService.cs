@@ -124,7 +124,7 @@ public class ProductManagementService : IProductManagementService
         var subscription = new Subscription(Guid.NewGuid(), client.Id, product.Id, subscriptionAmount, nowUtc);
         await _subscriptionRepository.AddAsync(subscription, cancellationToken).ConfigureAwait(false);
 
-        await _notificationService.NotifyAsync(client, product, channel, cancellationToken).ConfigureAwait(false);
+        await _notificationService.NotifyAsync(client, product, channel, subscription.Id, subscription.Amount, subscription.SubscribedAtUtc, cancellationToken).ConfigureAwait(false);
 
         return subscription.ToDto();
     }
@@ -155,7 +155,7 @@ public class ProductManagementService : IProductManagementService
         await _clientRepository.UpdateAsync(client, cancellationToken).ConfigureAwait(false);
 
         var channel = client.NotificationChannel;
-        await _notificationService.NotifyCancellationAsync(client, product, channel, cancellationToken).ConfigureAwait(false);
+        await _notificationService.NotifyCancellationAsync(client, product, channel, subscription.Id, subscription.Amount, subscription.CancelledAtUtc!.Value, cancellationToken).ConfigureAwait(false);
 
         return subscription.ToDto();
     }

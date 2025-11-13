@@ -4,41 +4,86 @@ using TechnicalTest.Domain.Enums;
 
 namespace TechnicalTest.Api.Services;
 
-public class NotificationService(ILogger<NotificationService> logger) : INotificationService
+public class NotificationService : INotificationService
 {
-    public Task NotifyAsync(Client client, Product product, NotificationChannel channel, CancellationToken cancellationToken)
+    private readonly ILogger<NotificationService> _logger;
+    private readonly IEventBridgeService _eventBridgeService;
+
+    public NotificationService(
+        ILogger<NotificationService> logger,
+        IEventBridgeService eventBridgeService)
     {
-         logger.LogInformation("****cliente {client}: {Message} ******", client.Email,product.Name);
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _eventBridgeService = eventBridgeService ?? throw new ArgumentNullException(nameof(eventBridgeService));
+    }
+
+    public async Task NotifyAsync(Client client, Product product, NotificationChannel channel, Guid subscriptionId, decimal amount, DateTime subscribedAtUtc, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("****cliente {client}: {Message} ******", client.Email, product.Name);
         var message = $"Se ha suscrito al producto {product.Name} por {channel}. Monto disponible: {client.Balance:C}.";
         switch (channel)
         {
             case NotificationChannel.Email:
-                logger.LogInformation("Enviando correo a cliente {ClientId}: {Message}", client.Id, message);
+                _logger.LogInformation("Enviando correo a cliente {ClientId}: {Message}", client.Id, message);
                 break;
             case NotificationChannel.Sms:
-                logger.LogInformation("Enviando SMS a cliente {ClientId}: {Message}", client.Id, message);
+                _logger.LogInformation("Enviando SMS a cliente {ClientId}: {Message}", client.Id, message);
                 break;
         }
 
-        return Task.CompletedTask;
+        // Publicar evento a EventBridge
+        try
+        {
+            await _eventBridgeService.PublishSubscriptionCreatedEventAsync(
+                subscriptionId: subscriptionId,
+                productId: product.Id,
+                clientId: client.Id,
+                customerEmail: client.Email,
+                customerPhone: client.Phone,
+                amount: amount,
+                subscribedAtUtc: subscribedAtUtc,
+                cancellationToken: cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al publicar evento SubscriptionCreatedEvent a EventBridge. SubscriptionId: {SubscriptionId}", subscriptionId);
+            // No lanzamos la excepción para no interrumpir el flujo principal
+        }
     }
 
-    public Task NotifyCancellationAsync(Client client, Product product, NotificationChannel channel, CancellationToken cancellationToken)
+    public async Task NotifyCancellationAsync(Client client, Product product, NotificationChannel channel, Guid subscriptionId, decimal amount, DateTime cancelledAtUtc, CancellationToken cancellationToken)
     {
         var clientFullName = $"{client.FirstName} {client.LastName}";
-        logger.LogInformation("****cancelación suscripción - cliente {client}: {product} ******", client.Email, product.Name);
+        _logger.LogInformation("****cancelación suscripción - cliente {client}: {product} ******", client.Email, product.Name);
         var message = $"Se ha cancelado su suscripción al producto {product.Name}. Por favor verifique que al cliente {clientFullName} con el email {client.Email} se le haya reintegrado su dinero.";
         switch (channel)
         {
             case NotificationChannel.Email:
-                logger.LogInformation("Enviando correo a cliente {ClientId}: {Message}", client.Id, message);
+                _logger.LogInformation("Enviando correo a cliente {ClientId}: {Message}", client.Id, message);
                 break;
             case NotificationChannel.Sms:
-                logger.LogInformation("Enviando SMS a cliente {ClientId}: {Message}", client.Id, message);
+                _logger.LogInformation("Enviando SMS a cliente {ClientId}: {Message}", client.Id, message);
                 break;
         }
 
-        return Task.CompletedTask;
+        // Publicar evento a EventBridge
+        try
+        {
+            await _eventBridgeService.PublishSubscriptionCancelledEventAsync(
+                subscriptionId: subscriptionId,
+                productId: product.Id,
+                clientId: client.Id,
+                customerEmail: client.Email,
+                customerPhone: client.Phone,
+                amount: amount,
+                cancelledAtUtc: cancelledAtUtc,
+                cancellationToken: cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al publicar evento SubscriptionCancelledEvent a EventBridge. SubscriptionId: {SubscriptionId}", subscriptionId);
+            // No lanzamos la excepción para no interrumpir el flujo principal
+        }
     }
 }
 

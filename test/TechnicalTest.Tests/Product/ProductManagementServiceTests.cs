@@ -534,7 +534,7 @@ public partial class ProductManagementServiceTests
             .Callback<DomainSubscription, CancellationToken>((subscription, _) => addedSubscription = subscription)
             .Returns(Task.CompletedTask);
         _notificationService
-            .Setup(service => service.NotifyAsync(client, product, client.NotificationChannel, cts.Token))
+            .Setup(service => service.NotifyAsync(client, product, client.NotificationChannel, It.IsAny<Guid>(), product.MinimumAmount, nowUtc, cts.Token))
             .Returns(Task.CompletedTask);
 
         var result = await sut.SubscribeAsync(request, cts.Token);
@@ -548,7 +548,7 @@ public partial class ProductManagementServiceTests
         result.Should().BeEquivalentTo(new SubscriptionDto(addedSubscription.Id, client.Id, product.Id, product.MinimumAmount, nowUtc, null, true));
         _clientRepository.Verify(repository => repository.UpdateAsync(client, cts.Token), Times.Once);
         _subscriptionRepository.Verify(repository => repository.AddAsync(addedSubscription, cts.Token), Times.Once);
-        _notificationService.Verify(service => service.NotifyAsync(client, product, client.NotificationChannel, cts.Token), Times.Once);
+        _notificationService.Verify(service => service.NotifyAsync(client, product, client.NotificationChannel, addedSubscription!.Id, product.MinimumAmount, nowUtc, cts.Token), Times.Once);
     }
 
     [Fact]
@@ -567,7 +567,7 @@ public partial class ProductManagementServiceTests
             .ThrowAsync<DomainException>()
             .WithMessage($"No se encontró el producto con id {request.ProductId}.");
         _subscriptionRepository.Verify(repository => repository.AddAsync(It.IsAny<DomainSubscription>(), It.IsAny<CancellationToken>()), Times.Never);
-        _notificationService.Verify(service => service.NotifyAsync(It.IsAny<DomainClient>(), It.IsAny<DomainProduct>(), It.IsAny<NotificationChannel>(), It.IsAny<CancellationToken>()), Times.Never);
+        _notificationService.Verify(service => service.NotifyAsync(It.IsAny<DomainClient>(), It.IsAny<DomainProduct>(), It.IsAny<NotificationChannel>(), It.IsAny<Guid>(), It.IsAny<decimal>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -590,7 +590,7 @@ public partial class ProductManagementServiceTests
             .ThrowAsync<DomainException>()
             .WithMessage($"No se encontró el cliente con id {request.ClientId}.");
         _subscriptionRepository.Verify(repository => repository.AddAsync(It.IsAny<DomainSubscription>(), It.IsAny<CancellationToken>()), Times.Never);
-        _notificationService.Verify(service => service.NotifyAsync(It.IsAny<DomainClient>(), It.IsAny<DomainProduct>(), It.IsAny<NotificationChannel>(), It.IsAny<CancellationToken>()), Times.Never);
+        _notificationService.Verify(service => service.NotifyAsync(It.IsAny<DomainClient>(), It.IsAny<DomainProduct>(), It.IsAny<NotificationChannel>(), It.IsAny<Guid>(), It.IsAny<decimal>(), It.IsAny<DateTime>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -645,7 +645,7 @@ public partial class ProductManagementServiceTests
             .Setup(repository => repository.UpdateAsync(client, cts.Token))
             .Returns(Task.CompletedTask);
         _notificationService
-            .Setup(service => service.NotifyCancellationAsync(client, product, client.NotificationChannel, cts.Token))
+            .Setup(service => service.NotifyCancellationAsync(client, product, client.NotificationChannel, subscription.Id, subscription.Amount, nowUtc, cts.Token))
             .Returns(Task.CompletedTask);
 
         var result = await sut.CancelSubscriptionAsync(subscription.Id, cts.Token);
@@ -657,7 +657,7 @@ public partial class ProductManagementServiceTests
         result.Should().BeEquivalentTo(new SubscriptionDto(subscription.Id, subscription.ClientId, subscription.ProductId, subscription.Amount, subscription.SubscribedAtUtc, nowUtc, false));
         _subscriptionRepository.Verify(repository => repository.UpdateAsync(subscription, cts.Token), Times.Once);
         _clientRepository.Verify(repository => repository.UpdateAsync(client, cts.Token), Times.Once);
-        _notificationService.Verify(service => service.NotifyCancellationAsync(client, product, client.NotificationChannel, cts.Token), Times.Once);
+        _notificationService.Verify(service => service.NotifyCancellationAsync(client, product, client.NotificationChannel, subscription.Id, subscription.Amount, nowUtc, cts.Token), Times.Once);
     }
 
     [Fact]

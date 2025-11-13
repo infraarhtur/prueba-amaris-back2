@@ -1,4 +1,5 @@
 using System.Text;
+using Amazon.EventBridge;
 using HealthChecks.NpgSql;
 using TechnicalTest.Api.Services;
 using TechnicalTest.Application.Interfaces;
@@ -41,6 +42,20 @@ builder.Services.AddSwaggerGen(options =>
 
     options.OperationFilter<AuthorizeCheckOperationFilter>();
 });
+
+// AWS EventBridge Configuration
+var awsRegion = builder.Configuration["AWS:Region"] ?? "us-east-1";
+builder.Services.AddSingleton<IAmazonEventBridge>(sp =>
+{
+    var config = new AmazonEventBridgeConfig
+    {
+        RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(awsRegion)
+    };
+    return new AmazonEventBridgeClient(config);
+});
+
+// Register services
+builder.Services.AddSingleton<IEventBridgeService, EventBridgeService>();
 builder.Services.AddSingleton<INotificationService, NotificationService>();
 builder.Services.AddScoped<IProductManagementService, ProductManagementService>();
 builder.Services.AddScoped<IClientService, ClientService>();
