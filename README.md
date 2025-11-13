@@ -433,6 +433,31 @@ Los mensajes SMS incluyen información sobre:
 
 ---
 
+## 🌐 Despliegue en AWS
+
+El proyecto está desplegado en una instancia EC2 de AWS y está disponible públicamente.
+
+### URL del Despliegue
+
+- **API Base:** http://44.223.40.48:8080
+- **Swagger UI:** http://44.223.40.48:8080/swagger/index.html
+
+### Acceso a la Documentación de la API
+
+Puedes acceder a la documentación interactiva de la API a través de Swagger UI en la siguiente URL:
+
+🔗 [http://44.223.40.48:8080/swagger/index.html](http://44.223.40.48:8080/swagger/index.html)
+
+Desde Swagger UI puedes:
+- ✅ Explorar todos los endpoints disponibles
+- ✅ Ver los modelos de datos (DTOs)
+- ✅ Probar los endpoints directamente desde el navegador
+- ✅ Autenticarte usando JWT para acceder a endpoints protegidos
+
+> **Nota:** Para más detalles sobre el proceso de despliegue en EC2 con Docker Compose, consulta el archivo `README2.md` que contiene la documentación completa del proceso de despliegue.
+
+---
+
 ## 📚 Comandos útiles de .NET
 
 - `dotnet build` - Compilar el proyecto
