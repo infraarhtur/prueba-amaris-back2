@@ -1,4 +1,11 @@
 namespace TechnicalTest.Application.DTOs;
 
-public record SubscriptionDto(Guid SubscriptionId, int FundId, decimal Amount, DateTime SubscribedAtUtc, bool IsActive);
+public record SubscriptionDto(
+    Guid Id,
+    Guid ClientId,
+    int ProductId,
+    decimal Amount,
+    DateTime SubscribedAtUtc,
+    DateTime? CancelledAtUtc,
+    bool IsActive);
 

@@ -1,0 +1,34 @@
+services:
+  api:
+    image: back-test-amaris:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Usar la red del host para acceder a IMDS de EC2
+    network_mode: host
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      # Usar localhost ya que estamos en network_mode: host
+      ConnectionStrings__Default: Host=localhost;Port=5435;Database=technical_test_db;Username=postgres;Password=postgres;Include Error Detail=true
+    # Nota: depends_on no funciona con network_mode: host, 
+    # pero la base de datos ya está expuesta en el puerto 5435 del host
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: technical_test_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5435:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+

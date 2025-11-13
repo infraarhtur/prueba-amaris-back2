@@ -8,7 +8,7 @@ public class Subscription
     {
     }
 
-    public Subscription(Guid id, int fundId, decimal amount, DateTime subscribedAtUtc)
+    public Subscription(Guid id, Guid clientId, int productId, decimal amount, DateTime subscribedAtUtc)
     {
         if (amount <= 0)
         {
@@ -16,13 +16,15 @@ public class Subscription
         }
 
         Id = id;
-        FundId = fundId;
+        ClientId = clientId;
+        ProductId = productId;
         Amount = amount;
         SubscribedAtUtc = subscribedAtUtc;
     }
 
     public Guid Id { get; private init; }
-    public int FundId { get; private init; }
+    public Guid ClientId { get; private init; }
+    public int ProductId { get; private init; }
     public decimal Amount { get; private init; }
     public DateTime SubscribedAtUtc { get; private init; }
     public DateTime? CancelledAtUtc { get; private set; }

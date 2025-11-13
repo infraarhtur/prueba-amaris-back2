@@ -1,0 +1,47 @@
+# Version control
+.git
+.gitignore
+
+# IDE and tooling
+.idea/
+.vscode/
+.vs/
+
+# Build artifacts
+**/bin/
+**/obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# Logs and coverage
+*.log
+coverage/
+*.coverage
+*.coveragexml
+TestResults/
+
+# NuGet and packages
+packages/
+*.nupkg
+*.snupkg
+
+# Entity Framework
+Migrations/
+
+# Local configuration
+appsettings.Development.json
+appsettings.Local.json
+PublishProfiles/
+*.Publish.xml
+*.azurePubxml
+
+# Temporary files
+*.tmp
+~*
+.DS_Store
+
