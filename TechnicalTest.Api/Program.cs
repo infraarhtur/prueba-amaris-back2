@@ -1,5 +1,6 @@
 using System.Text;
 using Amazon.EventBridge;
+using Amazon.SimpleNotificationService;
 using HealthChecks.NpgSql;
 using TechnicalTest.Api.Services;
 using TechnicalTest.Application.Interfaces;
@@ -54,9 +55,20 @@ builder.Services.AddSingleton<IAmazonEventBridge>(sp =>
     return new AmazonEventBridgeClient(config);
 });
 
+// AWS SNS Configuration
+builder.Services.AddSingleton<IAmazonSimpleNotificationService>(sp =>
+{
+    var config = new AmazonSimpleNotificationServiceConfig
+    {
+        RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(awsRegion)
+    };
+    return new AmazonSimpleNotificationServiceClient(config);
+});
+
 // Register services
 builder.Services.AddSingleton<IEventBridgeService, EventBridgeService>();
 builder.Services.AddSingleton<INotificationService, NotificationService>();
+builder.Services.AddSingleton<ISnsSubscriptionService, SnsSubscriptionService>();
 builder.Services.AddScoped<IProductManagementService, ProductManagementService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
