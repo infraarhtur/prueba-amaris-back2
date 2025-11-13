@@ -22,6 +22,28 @@ public class NotificationService : INotificationService
         _logger.LogInformation("****cliente {client}: {Message} ******", client.Email, product.Name);
         var message = $"Se ha suscrito al producto {product.Name} por {channel}. Monto disponible: {client.Balance:C}.";
         
+        // Validar y loggear el número de teléfono antes de enviar
+        if (string.IsNullOrWhiteSpace(client.Phone))
+        {
+            _logger.LogWarning(
+                "⚠️ El cliente {ClientId} ({Email}) no tiene número de teléfono configurado. No se enviará SMS. SubscriptionId: {SubscriptionId}",
+                client.Id, client.Email, subscriptionId);
+        }
+        else
+        {
+            _logger.LogInformation(
+                "📱 Enviando notificación con número de teléfono: {PhoneNumber} para cliente {ClientId} ({Email}). SubscriptionId: {SubscriptionId}",
+                client.Phone, client.Id, client.Email, subscriptionId);
+            
+            // Verificar formato internacional
+            if (!client.Phone.StartsWith("+"))
+            {
+                _logger.LogWarning(
+                    "⚠️ El número de teléfono {PhoneNumber} del cliente {ClientId} no tiene formato internacional (debe comenzar con +). Esto puede causar problemas al enviar SMS.",
+                    client.Phone, client.Id);
+            }
+        }
+        
         // Publicar evento a EventBridge siempre, independientemente del canal
         // La lambda procesará el evento y enviará tanto SMS como correo
         try
@@ -31,16 +53,19 @@ public class NotificationService : INotificationService
                 productId: product.Id,
                 clientId: client.Id,
                 customerEmail: client.Email,
-                customerPhone: client.Phone,
+                customerPhone: client.Phone ?? string.Empty,
                 amount: amount,
                 subscribedAtUtc: subscribedAtUtc,
                 cancellationToken: cancellationToken);
             
-            _logger.LogInformation("Evento SubscriptionCreatedEvent publicado exitosamente a EventBridge. SubscriptionId: {SubscriptionId}", subscriptionId);
+            _logger.LogInformation(
+                "✅ Evento SubscriptionCreatedEvent publicado exitosamente a EventBridge. SubscriptionId: {SubscriptionId}, ClientId: {ClientId}, Phone: {Phone}",
+                subscriptionId, client.Id, client.Phone ?? "N/A");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error al publicar evento SubscriptionCreatedEvent a EventBridge. SubscriptionId: {SubscriptionId}", subscriptionId);
+            _logger.LogError(ex, "Error al publicar evento SubscriptionCreatedEvent a EventBridge. SubscriptionId: {SubscriptionId}, ClientId: {ClientId}, Phone: {Phone}", 
+                subscriptionId, client.Id, client.Phone ?? "N/A");
             // No lanzamos la excepción para no interrumpir el flujo principal
         }
 
@@ -62,6 +87,28 @@ public class NotificationService : INotificationService
         _logger.LogInformation("****cancelación suscripción - cliente {client}: {product} ******", client.Email, product.Name);
         var message = $"Se ha cancelado su suscripción al producto {product.Name}. Por favor verifique que al cliente {clientFullName} con el email {client.Email} se le haya reintegrado su dinero.";
         
+        // Validar y loggear el número de teléfono antes de enviar
+        if (string.IsNullOrWhiteSpace(client.Phone))
+        {
+            _logger.LogWarning(
+                "⚠️ El cliente {ClientId} ({Email}) no tiene número de teléfono configurado. No se enviará SMS. SubscriptionId: {SubscriptionId}",
+                client.Id, client.Email, subscriptionId);
+        }
+        else
+        {
+            _logger.LogInformation(
+                "📱 Enviando notificación de cancelación con número de teléfono: {PhoneNumber} para cliente {ClientId} ({Email}). SubscriptionId: {SubscriptionId}",
+                client.Phone, client.Id, client.Email, subscriptionId);
+            
+            // Verificar formato internacional
+            if (!client.Phone.StartsWith("+"))
+            {
+                _logger.LogWarning(
+                    "⚠️ El número de teléfono {PhoneNumber} del cliente {ClientId} no tiene formato internacional (debe comenzar con +). Esto puede causar problemas al enviar SMS.",
+                    client.Phone, client.Id);
+            }
+        }
+        
         // Publicar evento a EventBridge siempre, independientemente del canal
         // La lambda procesará el evento y enviará tanto SMS como correo
         try
@@ -71,16 +118,19 @@ public class NotificationService : INotificationService
                 productId: product.Id,
                 clientId: client.Id,
                 customerEmail: client.Email,
-                customerPhone: client.Phone,
+                customerPhone: client.Phone ?? string.Empty,
                 amount: amount,
                 cancelledAtUtc: cancelledAtUtc,
                 cancellationToken: cancellationToken);
             
-            _logger.LogInformation("Evento SubscriptionCancelledEvent publicado exitosamente a EventBridge. SubscriptionId: {SubscriptionId}", subscriptionId);
+            _logger.LogInformation(
+                "✅ Evento SubscriptionCancelledEvent publicado exitosamente a EventBridge. SubscriptionId: {SubscriptionId}, ClientId: {ClientId}, Phone: {Phone}",
+                subscriptionId, client.Id, client.Phone ?? "N/A");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error al publicar evento SubscriptionCancelledEvent a EventBridge. SubscriptionId: {SubscriptionId}", subscriptionId);
+            _logger.LogError(ex, "Error al publicar evento SubscriptionCancelledEvent a EventBridge. SubscriptionId: {SubscriptionId}, ClientId: {ClientId}, Phone: {Phone}", 
+                subscriptionId, client.Id, client.Phone ?? "N/A");
             // No lanzamos la excepción para no interrumpir el flujo principal
         }
 

@@ -50,6 +50,11 @@ public class EventBridgeService : IEventBridgeService
         };
 
         var detailJson = JsonSerializer.Serialize(detail);
+        
+        // Log del detalle completo del evento para verificación
+        _logger.LogDebug(
+            "Detalle completo del evento SubscriptionCreatedEvent: {EventDetail}",
+            detailJson);
 
         var request = new PutEventsRequest
         {
@@ -68,8 +73,8 @@ public class EventBridgeService : IEventBridgeService
         try
         {
             _logger.LogInformation(
-                "Publishing SubscriptionCreatedEvent to EventBridge. SubscriptionId: {SubscriptionId}, ProductId: {ProductId}, ClientId: {ClientId}",
-                subscriptionId, productId, clientId);
+                "📤 Publicando SubscriptionCreatedEvent a EventBridge. SubscriptionId: {SubscriptionId}, ProductId: {ProductId}, ClientId: {ClientId}, Email: {Email}, Phone: {Phone}",
+                subscriptionId, productId, clientId, customerEmail, customerPhone ?? "N/A");
 
             var response = await _eventBridgeClient.PutEventsAsync(request, cancellationToken);
 
@@ -86,8 +91,8 @@ public class EventBridgeService : IEventBridgeService
             else
             {
                 _logger.LogInformation(
-                    "Successfully published SubscriptionCreatedEvent to EventBridge. EventId: {EventId}",
-                    response.Entries.FirstOrDefault()?.EventId);
+                    "✅ SubscriptionCreatedEvent publicado exitosamente a EventBridge. EventId: {EventId}, SubscriptionId: {SubscriptionId}, Phone: {Phone}",
+                    response.Entries.FirstOrDefault()?.EventId, subscriptionId, customerPhone ?? "N/A");
             }
         }
         catch (Exception ex)
@@ -121,6 +126,11 @@ public class EventBridgeService : IEventBridgeService
         };
 
         var detailJson = JsonSerializer.Serialize(detail);
+        
+        // Log del detalle completo del evento para verificación
+        _logger.LogDebug(
+            "Detalle completo del evento SubscriptionCancelledEvent: {EventDetail}",
+            detailJson);
 
         var request = new PutEventsRequest
         {
@@ -139,8 +149,8 @@ public class EventBridgeService : IEventBridgeService
         try
         {
             _logger.LogInformation(
-                "Publishing SubscriptionCancelledEvent to EventBridge. SubscriptionId: {SubscriptionId}, ProductId: {ProductId}, ClientId: {ClientId}",
-                subscriptionId, productId, clientId);
+                "📤 Publicando SubscriptionCancelledEvent a EventBridge. SubscriptionId: {SubscriptionId}, ProductId: {ProductId}, ClientId: {ClientId}, Email: {Email}, Phone: {Phone}",
+                subscriptionId, productId, clientId, customerEmail, customerPhone ?? "N/A");
 
             var response = await _eventBridgeClient.PutEventsAsync(request, cancellationToken);
 
@@ -157,8 +167,8 @@ public class EventBridgeService : IEventBridgeService
             else
             {
                 _logger.LogInformation(
-                    "Successfully published SubscriptionCancelledEvent to EventBridge. EventId: {EventId}",
-                    response.Entries.FirstOrDefault()?.EventId);
+                    "✅ SubscriptionCancelledEvent publicado exitosamente a EventBridge. EventId: {EventId}, SubscriptionId: {SubscriptionId}, Phone: {Phone}",
+                    response.Entries.FirstOrDefault()?.EventId, subscriptionId, customerPhone ?? "N/A");
             }
         }
         catch (Exception ex)
