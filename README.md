@@ -347,6 +347,90 @@ reportgenerator \
 - El pipeline realiza los pasos `dotnet restore`, `dotnet build --configuration Release` y `dotnet test --configuration Release --collect:"XPlat Code Coverage"`.
 - Puedes revisar las ejecuciones desde la pestaña **Actions** del repositorio en GitHub y usarlo como base para agregar tareas adicionales (linters, build de contenedores, despliegues, etc.).
 
+### 5. Configuración de Correo Temporal para Pruebas
+
+Para el envío exitoso de correos durante las pruebas y validación de notificaciones, se debe configurar un correo temporal utilizando el servicio **YOPmail**.
+
+![Configuración de correo temporal en YOPmail](scripts/imgEmail1.png)
+
+#### Configuración del Correo Temporal
+
+1. **Accede al servicio YOPmail:**
+   - URL: <https://yopmail.com/es/>
+
+2. **Ingresa el correo temporal recomendado:**
+   - Correo: `amaris-test-full`
+   - El correo completo será: `amaris-test-full@yopmail.com`
+
+3. **Accede al buzón:**
+   - Haz clic en el botón de verificación (flecha derecha) para acceder al buzón
+   - El correo estará disponible y accesible sin necesidad de registro
+
+4. **Verificar el envío de correos:**
+   - Para verificar que el envío de email se realiza correctamente, haz clic en el botón **Actualizar** (refresh) en el buzón de YOPmail
+   - Los correos de notificación aparecerán en la lista del buzón
+
+![Buzón de correo temporal con emails recibidos](scripts/imgEmail2.png)
+
+#### Uso del Correo Temporal
+
+Este correo temporal es útil para:
+- ✅ Pruebas de envío de notificaciones por email
+- ✅ Validación de eventos de suscripción (`SubscriptionCreatedEvent`)
+- ✅ Validación de eventos de cancelación (`SubscriptionCancelledEvent`)
+- ✅ Testing de integración con servicios de notificación
+
+#### Configuración Automática del Email en Clientes
+
+> **⚠️ Aclaración importante para el envío de emails:**  
+> Para que los emails lleguen correctamente, **los clientes deben crearse con el correo `amaris-test-full@yopmail.com`**. El sistema utilizará automáticamente este correo si no se proporciona un email o si el email proporcionado está vacío. Esto es necesario porque **Amazon SES no permite enviar correos a emails no verificados**, y este correo temporal está registrado y verificado para las pruebas.
+
+![Emails verificados en Amazon SES](scripts/imgEmailVerificados.png)
+
+Los siguientes emails están actualmente verificados en Amazon SES:
+- `amaris-test-full@yopmail.com` - Email temporal para pruebas (usar este correo al crear clientes)
+- `infraarhtur@gmail.com` - Email de infraestructura
+
+> **Nota:** Puedes encontrar más detalles sobre la configuración en el archivo `scripts/configuracion_correo_temporal.md`.
+
+### 6. Configuración de Servicio de Mensajería SMS
+
+Para el envío exitoso de notificaciones SMS, se configuraron números de teléfono de prueba que están suscritos al servicio de Amazon SNS (Simple Notification Service).
+
+![Suscripciones SMS en Amazon SNS](scripts/imgSms.png)
+
+#### Números de Prueba Inscritos
+
+Los siguientes números de teléfono están actualmente suscritos y confirmados en Amazon SNS:
+- `+573208965783` - Número de prueba 1
+- `+573223032928` - Número de prueba 2
+
+Estos números están configurados para recibir notificaciones SMS cuando se crean o cancelan suscripciones a productos.
+
+#### CRUD de Suscripciones SMS
+
+El sistema incluye un CRUD completo para gestionar suscripciones de números telefónicos al servicio de notificaciones SMS:
+
+- **Crear suscripción** (`POST /api/sns/subscribe`): Suscribe un número de teléfono al topic SNS para recibir notificaciones SMS
+- **Listar suscripciones** (`GET /api/sns/subscriptions`): Obtiene todas las suscripciones activas del topic SNS
+- **Eliminar suscripción** (`DELETE /api/sns/subscriptions/{subscriptionArn}`): Cancela una suscripción SNS específica
+
+#### Verificación de Envío de SMS
+
+El sistema está configurado correctamente y los mensajes SMS se están enviando exitosamente. A continuación se muestra un ejemplo de los mensajes recibidos:
+
+![Mensajes SMS recibidos](scripts/imgSms3.png)
+
+Los mensajes SMS incluyen información sobre:
+- **Suscripciones creadas**: Producto, monto y ID de suscripción
+- **Suscripciones canceladas**: Producto, monto de reembolso e ID de suscripción
+
+> **⚠️ Consideraciones importantes sobre la entrega de SMS:**
+> - La llegada de los mensajes SMS puede verse afectada por el **número de envíos diarios** permitidos por el servicio
+> - La entrega también depende de que **no haya bloqueos por parte del operador** al número que envía los mensajes
+> - Para que los SMS lleguen correctamente, los números telefónicos deben estar suscritos y confirmados en Amazon SNS
+> - El proceso de suscripción se realiza a través del endpoint `POST /api/sns/subscribe`
+
 ---
 
 ## 📚 Comandos útiles de .NET
