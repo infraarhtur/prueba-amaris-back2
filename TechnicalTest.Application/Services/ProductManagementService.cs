@@ -154,6 +154,9 @@ public class ProductManagementService : IProductManagementService
         client.Credit(subscription.Amount);
         await _clientRepository.UpdateAsync(client, cancellationToken).ConfigureAwait(false);
 
+        var channel = client.NotificationChannel;
+        await _notificationService.NotifyCancellationAsync(client, product, channel, cancellationToken).ConfigureAwait(false);
+
         return subscription.ToDto();
     }
 

@@ -81,7 +81,9 @@ public partial class ScheduleServiceTests
             userId ?? Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
             "Alice",
             "Smith",
-            "Madrid");
+            "Madrid",
+            "alice.smith@example.com",
+            "+1234567890");
 
     [Fact]
     public async Task GetAsync_ShouldReturnMappedSchedules()

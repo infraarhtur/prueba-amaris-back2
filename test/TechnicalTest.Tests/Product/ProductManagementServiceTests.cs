@@ -53,6 +53,8 @@ public partial class ProductManagementServiceTests
             "Alice",
             "Smith",
             "Madrid",
+            "alice.smith@example.com",
+            "+1234567890",
             balance,
             channel);
         return client;
@@ -642,6 +644,9 @@ public partial class ProductManagementServiceTests
         _clientRepository
             .Setup(repository => repository.UpdateAsync(client, cts.Token))
             .Returns(Task.CompletedTask);
+        _notificationService
+            .Setup(service => service.NotifyCancellationAsync(client, product, client.NotificationChannel, cts.Token))
+            .Returns(Task.CompletedTask);
 
         var result = await sut.CancelSubscriptionAsync(subscription.Id, cts.Token);
 
@@ -652,6 +657,7 @@ public partial class ProductManagementServiceTests
         result.Should().BeEquivalentTo(new SubscriptionDto(subscription.Id, subscription.ClientId, subscription.ProductId, subscription.Amount, subscription.SubscribedAtUtc, nowUtc, false));
         _subscriptionRepository.Verify(repository => repository.UpdateAsync(subscription, cts.Token), Times.Once);
         _clientRepository.Verify(repository => repository.UpdateAsync(client, cts.Token), Times.Once);
+        _notificationService.Verify(service => service.NotifyCancellationAsync(client, product, client.NotificationChannel, cts.Token), Times.Once);
     }
 
     [Fact]
