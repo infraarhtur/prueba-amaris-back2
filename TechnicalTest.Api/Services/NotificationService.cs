@@ -21,17 +21,9 @@ public class NotificationService : INotificationService
     {
         _logger.LogInformation("****cliente {client}: {Message} ******", client.Email, product.Name);
         var message = $"Se ha suscrito al producto {product.Name} por {channel}. Monto disponible: {client.Balance:C}.";
-        switch (channel)
-        {
-            case NotificationChannel.Email:
-                _logger.LogInformation("Enviando correo a cliente {ClientId}: {Message}", client.Id, message);
-                break;
-            case NotificationChannel.Sms:
-                _logger.LogInformation("Enviando SMS a cliente {ClientId}: {Message}", client.Id, message);
-                break;
-        }
-
-        // Publicar evento a EventBridge
+        
+        // Publicar evento a EventBridge siempre, independientemente del canal
+        // La lambda procesará el evento y enviará tanto SMS como correo
         try
         {
             await _eventBridgeService.PublishSubscriptionCreatedEventAsync(
@@ -43,11 +35,24 @@ public class NotificationService : INotificationService
                 amount: amount,
                 subscribedAtUtc: subscribedAtUtc,
                 cancellationToken: cancellationToken);
+            
+            _logger.LogInformation("Evento SubscriptionCreatedEvent publicado exitosamente a EventBridge. SubscriptionId: {SubscriptionId}", subscriptionId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error al publicar evento SubscriptionCreatedEvent a EventBridge. SubscriptionId: {SubscriptionId}", subscriptionId);
             // No lanzamos la excepción para no interrumpir el flujo principal
+        }
+
+        // Log del canal seleccionado (informacional)
+        switch (channel)
+        {
+            case NotificationChannel.Email:
+                _logger.LogInformation("Canal de notificación seleccionado: Email para cliente {ClientId}: {Message}", client.Id, message);
+                break;
+            case NotificationChannel.Sms:
+                _logger.LogInformation("Canal de notificación seleccionado: SMS para cliente {ClientId}: {Message}", client.Id, message);
+                break;
         }
     }
 
@@ -56,17 +61,9 @@ public class NotificationService : INotificationService
         var clientFullName = $"{client.FirstName} {client.LastName}";
         _logger.LogInformation("****cancelación suscripción - cliente {client}: {product} ******", client.Email, product.Name);
         var message = $"Se ha cancelado su suscripción al producto {product.Name}. Por favor verifique que al cliente {clientFullName} con el email {client.Email} se le haya reintegrado su dinero.";
-        switch (channel)
-        {
-            case NotificationChannel.Email:
-                _logger.LogInformation("Enviando correo a cliente {ClientId}: {Message}", client.Id, message);
-                break;
-            case NotificationChannel.Sms:
-                _logger.LogInformation("Enviando SMS a cliente {ClientId}: {Message}", client.Id, message);
-                break;
-        }
-
-        // Publicar evento a EventBridge
+        
+        // Publicar evento a EventBridge siempre, independientemente del canal
+        // La lambda procesará el evento y enviará tanto SMS como correo
         try
         {
             await _eventBridgeService.PublishSubscriptionCancelledEventAsync(
@@ -78,11 +75,24 @@ public class NotificationService : INotificationService
                 amount: amount,
                 cancelledAtUtc: cancelledAtUtc,
                 cancellationToken: cancellationToken);
+            
+            _logger.LogInformation("Evento SubscriptionCancelledEvent publicado exitosamente a EventBridge. SubscriptionId: {SubscriptionId}", subscriptionId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error al publicar evento SubscriptionCancelledEvent a EventBridge. SubscriptionId: {SubscriptionId}", subscriptionId);
             // No lanzamos la excepción para no interrumpir el flujo principal
+        }
+
+        // Log del canal seleccionado (informacional)
+        switch (channel)
+        {
+            case NotificationChannel.Email:
+                _logger.LogInformation("Canal de notificación seleccionado: Email para cliente {ClientId}: {Message}", client.Id, message);
+                break;
+            case NotificationChannel.Sms:
+                _logger.LogInformation("Canal de notificación seleccionado: SMS para cliente {ClientId}: {Message}", client.Id, message);
+                break;
         }
     }
 }
