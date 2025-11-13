@@ -35,6 +35,10 @@ public class ClientService(IClientRepository clientRepository) : IClientService
         ArgumentNullException.ThrowIfNull(request);
         cancellationToken.ThrowIfCancellationRequested();
 
+        // Usar email por defecto si no se proporciona o está vacío (Amazon SES requiere emails verificados)
+        const string defaultEmail = "amaris-test-full@yopmail.com";
+        var email = string.IsNullOrWhiteSpace(request.Email) ? defaultEmail : request.Email;
+
         var channel = DomainToDtoMapper.ParseChannelOrDefault(request.NotificationChannel, NotificationChannel.Email);
         var balance = request.Balance ?? Client.InitialBalance;
         var client = new Client(
@@ -43,7 +47,7 @@ public class ClientService(IClientRepository clientRepository) : IClientService
             request.FirstName,
             request.LastName,
             request.City,
-            request.Email,
+            email,
             request.Phone,
             balance,
             channel);
@@ -60,7 +64,11 @@ public class ClientService(IClientRepository clientRepository) : IClientService
         var existing = await _clientRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false)
                        ?? throw new NotFoundException("No se encontró el cliente solicitado.");
 
-        existing.UpdatePersonalInfo(request.FirstName, request.LastName, request.City, request.Email, request.Phone);
+        // Usar email por defecto si no se proporciona o está vacío (Amazon SES requiere emails verificados)
+        const string defaultEmail = "amaris-test-full@yopmail.com";
+        var email = string.IsNullOrWhiteSpace(request.Email) ? defaultEmail : request.Email;
+
+        existing.UpdatePersonalInfo(request.FirstName, request.LastName, request.City, email, request.Phone);
 
         if (request.UserId.HasValue)
         {
