@@ -63,3 +63,12 @@ reportgenerator \
 - Este repositorio cuenta con un workflow básico en `.github/workflows/dotnet-ci.yml` que se ejecuta en cada `push` o `pull_request` hacia `main`.
 - El pipeline realiza los pasos `dotnet restore`, `dotnet build --configuration Release` y `dotnet test --configuration Release --collect:"XPlat Code Coverage"`.
 - Puedes revisar las ejecuciones desde la pestaña **Actions** del repositorio en GitHub y usarlo como base para agregar tareas adicionales (linters, build de contenedores, despliegues, etc.).
+
+
+
+# Comandos útiles de .NET:
+- dotnet build - Compilar el proyecto
+- dotnet run - Compilar y ejecutar
+- dotnet restore - Restaurar paquetes NuGet
+- dotnet clean - Limpiar archivos de compilación
+- dotnet test - Ejecutar tests

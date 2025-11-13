@@ -114,6 +114,12 @@ app.UseExceptionHandler(errorApp =>
                 Detail = notFoundException.Message,
                 Status = StatusCodes.Status404NotFound
             },
+            DomainException domainException when domainException.Message.Contains("Credenciales inválidas", StringComparison.OrdinalIgnoreCase) => new ProblemDetails
+            {
+                Title = "Error de autenticación",
+                Detail = domainException.Message,
+                Status = StatusCodes.Status401Unauthorized
+            },
             DomainException domainException => new ProblemDetails
             {
                 Title = "Regla de negocio incumplida",
