@@ -40,8 +40,8 @@ public class ClientControllerTests
         var sut = CreateSut();
         var expected = new List<ClientDto>
         {
-            new(Guid.NewGuid(), Guid.NewGuid(), "Alice", "Smith", "Madrid", "alice@example.com", 100m, "email", DateTime.UtcNow),
-            new(Guid.NewGuid(), Guid.NewGuid(), "Bob", "Jones", "Barcelona", "bob@example.com", 200m, "sms", DateTime.UtcNow)
+            new(Guid.NewGuid(), Guid.NewGuid(), "Alice", "Smith", "Madrid", "alice@example.com", "+573001234567", 100m, "email", DateTime.UtcNow),
+            new(Guid.NewGuid(), Guid.NewGuid(), "Bob", "Jones", "Barcelona", "bob@example.com", "+573009876543", 200m, "sms", DateTime.UtcNow)
         };
         var cts = new CancellationTokenSource();
         _clientService
@@ -60,7 +60,7 @@ public class ClientControllerTests
     {
         var sut = CreateSut();
         var clientId = Guid.NewGuid();
-        var expected = new ClientDto(clientId, Guid.NewGuid(), "Alice", "Smith", "Madrid", "alice@example.com", 100m, "email", DateTime.UtcNow);
+        var expected = new ClientDto(clientId, Guid.NewGuid(), "Alice", "Smith", "Madrid", "alice@example.com", "+573001234567", 100m, "email", DateTime.UtcNow);
         var cts = new CancellationTokenSource();
         _clientService
             .Setup(service => service.GetByIdAsync(clientId, cts.Token))
@@ -77,8 +77,8 @@ public class ClientControllerTests
     public async Task CreateClientAsync_ShouldReturnCreatedClient()
     {
         var sut = CreateSut();
-        var request = new ClientCreateRequestDto(Guid.NewGuid(), "Alice", "Smith", "Madrid", "alice@example.com", 100m, "email");
-        var created = new ClientDto(Guid.NewGuid(), request.UserId, request.FirstName, request.LastName, request.City, request.Email, request.Balance ?? 0m, request.NotificationChannel ?? "email", DateTime.UtcNow);
+        var request = new ClientCreateRequestDto(Guid.NewGuid(), "Alice", "Smith", "Madrid", "alice@example.com", "+573001234567", 100m, "email");
+        var created = new ClientDto(Guid.NewGuid(), request.UserId, request.FirstName, request.LastName, request.City, request.Email, request.Phone, request.Balance ?? 0m, request.NotificationChannel ?? "email", DateTime.UtcNow);
         var cts = new CancellationTokenSource();
         _clientService
             .Setup(service => service.CreateAsync(request, cts.Token))
@@ -100,8 +100,8 @@ public class ClientControllerTests
         var sut = CreateSut();
         var clientId = Guid.NewGuid();
         var userId = Guid.NewGuid();
-        var request = new ClientUpdateRequestDto("Alice", "Smith", "Madrid", "alice@example.com", 150m, "sms", userId);
-        var updated = new ClientDto(clientId, userId, request.FirstName, request.LastName, request.City, request.Email, request.Balance ?? 0m, request.NotificationChannel ?? "email", DateTime.UtcNow);
+        var request = new ClientUpdateRequestDto("Alice", "Smith", "Madrid", "alice@example.com", "+573001234567", 150m, "sms", userId);
+        var updated = new ClientDto(clientId, userId, request.FirstName, request.LastName, request.City, request.Email, request.Phone, request.Balance ?? 0m, request.NotificationChannel ?? "email", DateTime.UtcNow);
         var cts = new CancellationTokenSource();
         _clientService
             .Setup(service => service.UpdateAsync(clientId, request, cts.Token))
