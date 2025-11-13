@@ -4,14 +4,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
+    # Usar la red del host para acceder a IMDS de EC2
+    network_mode: host
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__Default: Host=db;Port=5432;Database=technical_test_db;Username=postgres;Password=postgres;Include Error Detail=true
-    depends_on:
-      db:
-        condition: service_healthy
+      # Usar localhost ya que estamos en network_mode: host
+      ConnectionStrings__Default: Host=localhost;Port=5435;Database=technical_test_db;Username=postgres;Password=postgres;Include Error Detail=true
+    # Nota: depends_on no funciona con network_mode: host, 
+    # pero la base de datos ya está expuesta en el puerto 5435 del host
 
   db:
     image: postgres:16-alpine
