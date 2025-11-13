@@ -30,6 +30,7 @@ public static class DomainToDtoMapper
             client.LastName,
             client.City,
             client.Email,
+            client.Phone,
             client.Balance,
             client.NotificationChannel.ToString(),
             client.CreatedAtUtc);

@@ -6,5 +6,6 @@ public record ClientCreateRequestDto(
     string LastName,
     string City,
     string Email,
+    string Phone,
     decimal? Balance = null,
     string? NotificationChannel = null);

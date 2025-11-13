@@ -1,3 +1,4 @@
+using System.Linq;
 using TechnicalTest.Domain.Enums;
 using TechnicalTest.Domain.Exceptions;
 
@@ -13,6 +14,7 @@ public class Client
         LastName = string.Empty;
         City = string.Empty;
         Email = string.Empty;
+        Phone = string.Empty;
         NotificationChannel = NotificationChannel.Email;
         CreatedAtUtc = DateTime.UtcNow;
     }
@@ -24,13 +26,14 @@ public class Client
         string lastName,
         string city,
         string email,
+        string phone,
         decimal balance = InitialBalance,
         NotificationChannel notificationChannel = NotificationChannel.Email,
         DateTime? createdAtUtc = null)
     {
         Id = id;
         AssignUser(userId);
-        UpdatePersonalInfo(firstName, lastName, city, email);
+        UpdatePersonalInfo(firstName, lastName, city, email, phone);
         UpdateBalance(balance);
         NotificationChannel = notificationChannel;
         CreatedAtUtc = createdAtUtc ?? DateTime.UtcNow;
@@ -43,6 +46,7 @@ public class Client
     public string LastName { get; private set; }
     public string City { get; private set; }
     public string Email { get; private set; }
+    public string Phone { get; private set; }
     public decimal Balance { get; private set; }
     public NotificationChannel NotificationChannel { get; private set; }
     public DateTime CreatedAtUtc { get; private set; }
@@ -69,12 +73,13 @@ public class Client
         Balance += amount;
     }
 
-    public void UpdatePersonalInfo(string firstName, string lastName, string city, string email)
+    public void UpdatePersonalInfo(string firstName, string lastName, string city, string email, string phone)
     {
         FirstName = NormalizeRequiredText(firstName, nameof(firstName));
         LastName = NormalizeRequiredText(lastName, nameof(lastName));
         City = NormalizeRequiredText(city, nameof(city));
         Email = ValidateAndNormalizeEmail(email);
+        Phone = ValidateAndNormalizePhone(phone);
     }
 
     public void UpdateNotificationChannel(NotificationChannel channel)
@@ -135,6 +140,25 @@ public class Client
         }
 
         return normalizedEmail;
+    }
+
+    private static string ValidateAndNormalizePhone(string phone)
+    {
+        if (string.IsNullOrWhiteSpace(phone))
+        {
+            throw new DomainException("El campo celular es requerido.");
+        }
+
+        // Remover espacios, guiones, paréntesis y otros caracteres comunes
+        var normalizedPhone = new string(phone.Where(c => char.IsDigit(c) || c == '+').ToArray());
+
+        // Validar que tenga al menos 7 dígitos (número mínimo razonable para un teléfono)
+        if (normalizedPhone.Length < 7 || normalizedPhone.Length > 15)
+        {
+            throw new DomainException("El formato del celular no es válido. Debe tener entre 7 y 15 dígitos.");
+        }
+
+        return normalizedPhone;
     }
 }
 

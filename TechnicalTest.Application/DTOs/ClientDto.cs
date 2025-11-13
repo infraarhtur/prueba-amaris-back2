@@ -7,6 +7,7 @@ public record ClientDto(
     string LastName,
     string City,
     string Email,
+    string Phone,
     decimal Balance,
     string NotificationChannel,
     DateTime CreatedAtUtc);
